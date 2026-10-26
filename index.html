@@ -1,481 +1,916 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroLab Smart — Jaga Kesehatan Otak dan Stroke</title>
-    <!-- Tailwind CSS -->
+    <title>Jaga Kesehatan Otak dan Stroke - BAKTI SmartDoll (NeuroLab)</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter & Fredoka for fun gaming feel -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        brandYellow: '#FFD166',
+                        brandPink: '#EF476F',
+                        brandBlue: '#118AB2',
+                        brandGreen: '#06D6A0',
+                        brandDark: '#073B4C',
+                        brandPurple: '#8338EC'
+                    },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Fredoka', 'sans-serif'],
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
                     }
                 }
             }
         }
     </script>
     <style>
-        .animate-bounce-slow {
-            animation: bounce 3s infinite;
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F4F7FE;
+            user-select: none;
         }
-        .pulse-glow {
-            animation: pulseGlow 2s infinite;
+        .font-fredoka {
+            font-family: 'Fredoka', sans-serif;
         }
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
-            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.8); }
+        
+        /* Custom Animations */
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
-        .custom-scrollbar::-webkit-scrollbar {
+        .animate-pulse-brain {
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+        
+        @keyframes bounce-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-gentle {
+            animation: bounce-gentle 2.5s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
             width: 8px;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 9999px;
+        ::-webkit-scrollbar-track {
+            background: #F1F1F1;
+            border-radius: 10px;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        ::-webkit-scrollbar-thumb {
+            background: #118AB2;
+            border-radius: 10px;
         }
     </style>
 </head>
-<body class="h-full bg-gradient-to-br from-indigo-50 via-sky-50 to-emerald-50 text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col justify-between overflow-x-hidden">
+<body class="text-gray-800 antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
 
-    <!-- Top Navigation Bar / Header -->
-    <header id="main-header" class="hidden bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 px-4 py-3 border-b border-indigo-100 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xl shadow-md">
-                <i class="fa-solid fa-brain"></i>
+    <!-- Audio BGM (Soft & Ceria) -->
+    <audio id="bgm-audio" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=kids-happy-learning-112194.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-md border-b-4 border-brandBlue">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo & Brand -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="playAudioTap(); navigateTo('page-1')">
+                <div class="w-12 h-12 bg-brandYellow rounded-full flex items-center justify-center text-3xl shadow border-2 border-amber-400 animate-pulse-brain">
+                    🧠
+                </div>
+                <div>
+                    <h1 class="font-fredoka text-xl sm:text-2xl font-bold text-brandDark leading-tight">BAKTI <span class="text-brandPink">SmartDoll</span></h1>
+                    <p class="text-xs text-brandBlue font-extrabold hidden sm:block">NeuroLab - Jaga Kesehatan Otak & Stroke</p>
+                </div>
             </div>
-            <div>
-                <h1 class="font-display font-bold text-lg text-indigo-900 tracking-wide">NeuroLab Smart</h1>
-                <p class="text-xs text-slate-500" id="user-info-badge">Peserta: -</p>
+
+            <!-- Navigation Buttons -->
+            <nav class="hidden lg:flex items-center space-x-1 xl:space-x-2 font-fredoka text-sm">
+                <button onclick="playAudioTap(); navigateTo('page-1')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-house text-brandBlue"></i> <span>Home</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-2')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-comments text-brandPink"></i> <span>Apersepsi</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-3')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-book-open text-brandPurple"></i> <span>Materi Stroke</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-4')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-microscope text-brandGreen"></i> <span>Lab Detektif</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-5')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-gamepad text-amber-500"></i> <span>Mini Game</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-6')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-square-poll-check text-rose-500"></i> <span>Evaluasi</span>
+                </button>
+            </nav>
+
+            <!-- Audio & Toolbar -->
+            <div class="flex items-center space-x-3">
+                <!-- User Badge -->
+                <div id="user-display-badge" class="hidden bg-purple-100 border border-purple-300 text-purple-800 rounded-full px-3 py-1 font-fredoka text-xs sm:text-sm font-bold flex items-center space-x-1">
+                    <i class="fa-solid fa-user text-purple-600"></i>
+                    <span id="badge-user-name">Pengguna</span>
+                </div>
+
+                <!-- Star Counter -->
+                <div class="flex items-center bg-amber-100 border-2 border-amber-400 rounded-full px-3 py-1 text-amber-800 font-fredoka font-bold text-sm shadow-sm">
+                    <i class="fa-solid fa-star text-amber-400 text-lg mr-1.5 animate-bounce"></i>
+                    <span id="star-count">0</span>
+                </div>
+                
+                <!-- Sound Toggle Button -->
+                <button id="bgm-toggle" onclick="toggleBGM()" class="w-10 h-10 rounded-full bg-brandBlue text-white flex items-center justify-center hover:bg-sky-600 transition shadow" title="Musik Latar">
+                    <i id="bgm-icon" class="fa-solid fa-volume-xmark"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden w-10 h-10 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center hover:bg-gray-200">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
             </div>
         </div>
-        
-        <!-- Navigation Buttons -->
-        <nav class="flex items-center space-x-1 sm:space-x-2">
-            <button onclick="switchPage('home')" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center space-x-1.5" data-target="home">
-                <i class="fa-solid fa-house"></i><span class="hidden md:inline">Beranda</span>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 px-4 py-3 space-y-2 font-fredoka text-sm shadow-lg">
+            <button onclick="playAudioTap(); navigateTo('page-1'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-house text-brandBlue w-6"></i> <span>Home</span>
             </button>
-            <button onclick="switchPage('materi')" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center space-x-1.5" data-target="materi">
-                <i class="fa-solid fa-book-open"></i><span class="hidden md:inline">Materi</span>
+            <button onclick="playAudioTap(); navigateTo('page-2'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-comments text-brandPink w-6"></i> <span>Apersepsi</span>
             </button>
-            <button onclick="switchPage('simulasi')" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center space-x-1.5" data-target="simulasi">
-                <i class="fa-solid fa-flask"></i><span class="hidden md:inline">Simulasi Lab</span>
+            <button onclick="playAudioTap(); navigateTo('page-3'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-book-open text-brandPurple w-6"></i> <span>Materi Stroke</span>
             </button>
-            <button onclick="switchPage('game')" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center space-x-1.5" data-target="game">
-                <i class="fa-solid fa-gamepad"></i><span class="hidden md:inline">Detektif Otak</span>
+            <button onclick="playAudioTap(); navigateTo('page-4'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-microscope text-brandGreen w-6"></i> <span>Lab Detektif</span>
             </button>
-            <button onclick="switchPage('kuis')" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center space-x-1.5" data-target="kuis">
-                <i class="fa-solid fa-award"></i><span class="hidden md:inline">Kuis 20 Soal</span>
+            <button onclick="playAudioTap(); navigateTo('page-5'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-gamepad text-amber-500 w-6"></i> <span>Mini Game</span>
             </button>
-            <button onclick="confirmExit()" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-rose-600 hover:bg-rose-50 transition flex items-center space-x-1.5">
-                <i class="fa-solid fa-right-from-bracket"></i><span class="hidden md:inline">Keluar</span>
+            <button onclick="playAudioTap(); navigateTo('page-6'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-square-poll-check text-rose-500 w-6"></i> <span>Evaluasi (20 Soal)</span>
             </button>
-        </nav>
+        </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 w-full max-w-6xl mx-auto">
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto px-4 py-6 sm:py-10 flex-grow w-full">
 
-        <!-- ================= PAGE 0: LOGIN / PEMBUKA IDENTITAS ================= -->
-        <section id="page-login" class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-indigo-100 p-6 sm:p-8 animate-fade-in">
-            <div class="text-center mb-6">
-                <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-indigo-500 to-emerald-400 rounded-3xl flex items-center justify-center text-white text-3xl shadow-lg pulse-glow mb-4">
-                    <i class="fa-solid fa-brain"></i>
+        <!-- ================= HALAMAN 1: PEMBUKA & LOGIN ================= -->
+        <section id="page-1" class="page-view flex flex-col items-center justify-center text-center space-y-6 py-2">
+            
+            <!-- Brain Character Mascot -->
+            <div class="relative">
+                <div class="w-44 h-44 sm:w-56 sm:h-56 bg-gradient-to-tr from-pink-300 via-purple-300 to-indigo-200 rounded-full flex items-center justify-center shadow-2xl animate-pulse-brain border-8 border-white">
+                    <div class="text-7xl sm:text-8xl filter drop-shadow-lg transform hover:scale-110 transition duration-300">
+                        🧠
+                    </div>
                 </div>
-                <h2 class="font-display font-bold text-2xl text-indigo-950">NeuroLab Smart</h2>
-                <p class="text-sm text-slate-500 mt-1">Media Edukasi Interaktif: Jaga Kesehatan Otak & Stroke</p>
+                <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-brandYellow border-4 border-white px-4 py-1 rounded-full font-fredoka font-bold text-brandDark shadow-lg text-xs sm:text-sm animate-bounce-gentle whitespace-nowrap">
+                    Hai! Aku Brainy! 👋
+                </div>
             </div>
 
-            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nama Lengkap</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" id="input-nama" required placeholder="Masukkan nama kamu..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Usia (Tahun)</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-cake-candles"></i></span>
-                        <input type="number" id="input-usia" required min="10" max="100" placeholder="Contoh: 11, 25, atau 60" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                    </div>
-                    <span class="text-[11px] text-slate-400 mt-1 block">Cocok untuk Remaja, Dewasa, dan Lansia (10–100 tahun)</span>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Asal / Alamat / Kota</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-location-dot"></i></span>
-                        <input type="text" id="input-alamat" required placeholder="Contoh: Banjarmasin" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full mt-4 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-display font-semibold rounded-xl shadow-lg shadow-indigo-200 hover:opacity-95 transition transform active:scale-95 flex items-center justify-center space-x-2">
-                    <span>Mulai Petualangan Otak</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </form>
-        </section>
-
-        <!-- ================= PAGE 1: HOME / BERANDA ================= -->
-        <section id="page-home" class="hidden w-full bg-white rounded-3xl shadow-xl border border-indigo-100 p-6 sm:p-10 text-center relative overflow-hidden">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-indigo-100 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
-            <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-emerald-100 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
-
-            <div class="max-w-2xl mx-auto relative z-10">
-                <div class="inline-flex items-center space-x-2 bg-indigo-50 text-indigo-700 px-4 py-1.5 rounded-full text-xs font-semibold mb-4">
-                    <i class="fa-solid fa-shield-heart"></i>
-                    <span>Edukasi Kesehatan & Pencegahan Stroke</span>
-                </div>
-                <h2 class="font-display font-bold text-3xl sm:text-4xl text-indigo-950 mb-4">
-                    Jaga Kesehatan Otak & Waspada Stroke!
-                </h2>
-                <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
-                    Halo, <span id="welcome-name" class="font-bold text-indigo-600">Sobat</span>! Otak adalah pusat kendali tubuh yang luar biasa. Melalui media interaktif ini, kita akan belajar bersama cara menjaga pembuluh darah otak, mengenali gejala stroke sejak dini, dan memahami pemeriksaan laboratorium dengan seru!
+            <!-- Title -->
+            <div class="max-w-2xl space-y-2">
+                <span class="bg-brandGreen/20 text-brandGreen font-fredoka font-bold text-xs sm:text-sm px-4 py-1.5 rounded-full uppercase tracking-wider inline-block border border-brandGreen/30">
+                    BAKTI SmartDoll Interactive Learning
+                </span>
+                <h1 class="font-fredoka text-3xl sm:text-5xl font-extrabold text-brandDark leading-tight">
+                    Jaga Kesehatan Otak <br><span class="text-brandPink">& Cegah Stroke</span>
+                </h1>
+                <p class="text-gray-600 text-sm sm:text-base max-w-xl mx-auto font-medium">
+                    Media belajar seru untuk Remaja, Dewasa, hingga Lansia. Mari kenali pencegahan stroke bersama Karakter <strong>Brainy</strong>!
                 </p>
+            </div>
 
-                <!-- Mascot Card -->
-                <div class="bg-gradient-to-r from-indigo-500/10 to-violet-500/10 p-6 rounded-2xl border border-indigo-100 flex flex-col sm:flex-row items-center justify-between mb-8 text-left">
-                    <div class="flex items-center space-x-4 mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-white rounded-2xl shadow-md flex items-center justify-center text-3xl text-indigo-600 animate-bounce-slow">
-                            🧠
+            <!-- Form Identitas Pengguna -->
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-brandBlue w-full max-w-md text-left space-y-4">
+                <h3 class="font-fredoka text-lg font-bold text-brandDark flex items-center gap-2">
+                    <i class="fa-solid fa-id-card text-brandPink"></i> Masukkan Identitas Kamu:
+                </h3>
+                
+                <div class="space-y-3 font-fredoka text-sm">
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-1">Nama Lengkap:</label>
+                        <input type="text" id="input-nama" placeholder="Contoh: Budi Santoso" class="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-brandBlue focus:outline-none transition">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-1">Usia (Tahun):</label>
+                            <input type="number" id="input-usia" placeholder="Contoh: 12 / 45" class="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-brandBlue focus:outline-none transition">
                         </div>
                         <div>
-                            <h3 class="font-display font-bold text-indigo-900 text-base">"Otak Sehat" Pemandu Belajar</h3>
-                            <p class="text-xs text-slate-500">Siap membimbingmu menjadi Ahli Kesehatan Otak!</p>
+                            <label class="block text-gray-700 font-bold mb-1">Kategori:</label>
+                            <select id="input-kategori" class="w-full px-3 py-2.5 rounded-xl border-2 border-gray-200 focus:border-brandBlue focus:outline-none transition">
+                                <option value="Remaja">Remaja (10-18)</option>
+                                <option value="Dewasa">Dewasa (19-59)</option>
+                                <option value="Lansia">Lansia (60+)</option>
+                            </select>
                         </div>
                     </div>
-                    <button onclick="toggleAudio()" id="audio-toggle-btn" class="px-4 py-2 bg-white text-indigo-600 font-semibold text-xs rounded-xl shadow-sm border border-indigo-200 hover:bg-indigo-50 transition flex items-center space-x-2">
-                        <i class="fa-solid fa-music"></i>
-                        <span id="audio-status-text">Musik Latar: Off</span>
-                    </button>
+
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-1">Asal Alamat / Kota:</label>
+                        <input type="text" id="input-alamat" placeholder="Contoh: Jakarta / Surabaya" class="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-brandBlue focus:outline-none transition">
+                    </div>
                 </div>
 
-                <div class="flex flex-wrap justify-center gap-4">
-                    <button onclick="switchPage('materi')" class="px-6 py-3 bg-indigo-600 text-white font-display font-semibold rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition flex items-center space-x-2">
-                        <i class="fa-solid fa-book-open"></i>
-                        <span>Mulai Belajar Materi</span>
-                    </button>
-                    <button onclick="switchPage('simulasi')" class="px-6 py-3 bg-emerald-600 text-white font-display font-semibold rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition flex items-center space-x-2">
-                        <i class="fa-solid fa-flask"></i>
-                        <span>Simulasi Lab & Otak</span>
-                    </button>
-                </div>
+                <button onclick="startAppWithProfile()" class="w-full bg-brandPink hover:bg-rose-600 text-white font-fredoka font-bold text-lg py-3 rounded-2xl shadow-lg transition transform active:scale-95 border-b-4 border-rose-800 flex items-center justify-center space-x-2">
+                    <span>Mulai Belajar</span>
+                    <i class="fa-solid fa-play"></i>
+                </button>
             </div>
         </section>
 
-        <!-- ================= PAGE 2: MATERI STROKE & OTAK ================= -->
-        <section id="page-materi" class="hidden w-full bg-white rounded-3xl shadow-xl border border-indigo-100 p-6 sm:p-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-4 mb-6">
-                <div>
-                    <span class="text-xs font-bold text-indigo-600 tracking-wider uppercase">Modul Edukasi</span>
-                    <h2 class="font-display font-bold text-2xl text-slate-900">Materi Lengkap: Otak & Stroke</h2>
+        <!-- ================= HALAMAN 2: APERSEPSI ================= -->
+        <section id="page-2" class="page-view hidden space-y-8">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-brandBlue to-teal-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center sm:text-left">
+                    <span class="bg-white/20 font-fredoka text-xs px-3 py-1 rounded-full uppercase tracking-wider">Tahap 1: Apersepsi</span>
+                    <h2 class="font-fredoka text-2xl sm:text-4xl font-bold">Yuk, Tes Pengetahuan Awalmu! 🤔</h2>
+                    <p class="text-white/90 text-sm sm:text-base max-w-lg">Jawab pertanyaan interaktif di bawah ini untuk memulai!</p>
                 </div>
-                <button onclick="switchPage('simulasi')" class="mt-3 sm:mt-0 px-4 py-2 bg-indigo-50 text-indigo-600 font-semibold text-xs rounded-xl hover:bg-indigo-100 transition flex items-center space-x-1">
-                    <span>Lanjut ke Simulasi Lab</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
+                <div class="w-20 h-20 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center text-5xl flex-shrink-0 animate-bounce-gentle">
+                    🕵️‍♂️
+                </div>
             </div>
 
-            <div class="space-y-6 custom-scrollbar max-h-[65vh] overflow-y-auto pr-2">
-                <!-- Apersepsi & Pengertian -->
-                <div class="bg-sky-50/70 border border-sky-100 p-5 rounded-2xl">
-                    <h3 class="font-display font-bold text-sky-900 text-lg mb-2 flex items-center space-x-2">
-                        <i class="fa-solid fa-circle-question text-sky-600"></i>
-                        <span>1. Apa Itu Stroke & Kondisi Darurat Medis?</span>
-                    </h3>
-                    <p class="text-sm text-slate-700 leading-relaxed mb-3">
-                        Stroke adalah kondisi darurat medis akibat gangguan fungsi saraf di otak karena kurangnya aliran darah (tersumbat atau pecah) yang menyebabkan kematian sel saraf. Otak sangat bergantung pada aliran darah pembawa oksigen dan nutrisi.
-                    </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-medium">
-                        <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm">
-                            <span class="font-bold text-sky-800 block mb-1">🧠 Penyakit Lain Terkait Otak:</span>
-                            Demensia, Alzheimer, Epilepsi, Migrain kronis, dan Tumor otak.
+            <!-- Question 1 -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-4">
+                <div class="flex items-start space-x-3">
+                    <span class="bg-brandPink text-white font-fredoka font-bold rounded-2xl w-8 h-8 flex items-center justify-center flex-shrink-0">1</span>
+                    <h3 class="font-fredoka text-lg sm:text-xl font-bold text-brandDark">Mengapa penyakit stroke bisa terjadi pada seseorang?</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                    <button onclick="checkApersepsi(this, false, 'Kurang tepat! Stroke tidak disebabkan oleh kuman udara, melainkan masalah pembuluh darah di otak.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>A. Karena infeksi kuman atau bakteri di udara</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, true, 'Benar sekali! 🎉 Stroke terjadi karena gangguan aliran darah ke otak (sumbatan atau pecah pembuluh darah).')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>B. Karena gangguan aliran darah ke otak (tersumbat / pecah)</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, false, 'Belum tepat! Jarang berjemur bukan penyebab utama serangan stroke.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>C. Karena jarang berjemur di bawah matahari pagi</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, false, 'Salah! Kurang minum memang dehidrasi, tapi bukan penyebab stroke langsung.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>D. Karena terlalu banyak minum air putih murni</span>
+                    </button>
+                </div>
+                <div class="feedback-box hidden p-4 rounded-2xl font-bold text-sm"></div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-4">
+                <div class="flex items-start space-x-3">
+                    <span class="bg-brandPink text-white font-fredoka font-bold rounded-2xl w-8 h-8 flex items-center justify-center flex-shrink-0">2</span>
+                    <h3 class="font-fredoka text-lg sm:text-xl font-bold text-brandDark">Manakah di bawah ini yang merupakan gejala khas serangan stroke?</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                    <button onclick="checkApersepsi(this, false, 'Salah! Batuk adalah masalah pada saluran pernapasan/paru-paru.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>A. Batuk berdahak dan pilek selama seminggu</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, false, 'Belum tepat! Gatal kulit biasanya indikasi alergi.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>B. Gatal-gatal di seluruh permukaan kulit</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, true, 'Hebat! Tepat sekali! 🌟 Senyum mencong, bicara pelo, dan tangan lemah mendadak adalah gejala utama!')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>C. Senyum mencong, bicara pelo, & tangan lemah mendadak</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, false, 'Kurang tepat! Sakit gigi adalah gangguan kesehatan mulut.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>D. Nyeri pada gigi geraham saat makan es krim</span>
+                    </button>
+                </div>
+                <div class="feedback-box hidden p-4 rounded-2xl font-bold text-sm"></div>
+            </div>
+
+            <!-- Navigation Bar Bottom -->
+            <div class="flex justify-between items-center pt-4">
+                <button onclick="playAudioTap(); navigateTo('page-1')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-fredoka font-bold px-6 py-3 rounded-2xl transition">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-3')" class="bg-brandBlue hover:bg-sky-600 text-white font-fredoka font-bold px-6 py-3 rounded-2xl transition shadow-lg">
+                    Lanjut ke Materi Stroke <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= HALAMAN 3: MATERI STROKE ================= -->
+        <section id="page-3" class="page-view hidden space-y-8">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-brandPurple to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex items-center justify-between">
+                <div>
+                    <span class="bg-white/20 font-fredoka text-xs px-3 py-1 rounded-full uppercase tracking-wider">Tahap 2: Pembahasan Lengkap</span>
+                    <h2 class="font-fredoka text-2xl sm:text-4xl font-bold mt-1">Mengenal Otak, Stroke & Penanganannya 🧠</h2>
+                    <p class="text-white/90 text-sm sm:text-base">Pelajari definisi stroke, gejala "SeGeRa Ke RS", serta alur medis 6 langkah!</p>
+                </div>
+            </div>
+
+            <!-- Section 1: Pengertian & Bahaya Stroke -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-6">
+                <h3 class="font-fredoka text-2xl font-bold text-brandDark flex items-center gap-3 border-b-2 border-gray-100 pb-3">
+                    <span class="text-3xl">🩸</span> Pengertian & Bahaya Stroke
+                </h3>
+                <p class="text-gray-700 leading-relaxed text-base sm:text-lg">
+                    <strong>Stroke</strong> adalah kondisi darurat medis akibat gangguan fungsi saraf di otak karena kurangnya aliran darah (tersumbat atau pecah) yang menyebabkan kematian sel-sel saraf otak.
+                </p>
+
+                <!-- 2 Jenis Utama Stroke -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <div class="bg-sky-50 rounded-2xl p-5 border-2 border-sky-200 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">🧊</span>
+                            <h4 class="font-fredoka text-xl font-bold text-sky-900">1. Stroke Iskemik (Sumbatan)</h4>
                         </div>
-                        <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm">
-                            <span class="font-bold text-sky-800 block mb-1">⚠️ Bahaya Utama:</span>
-                            Dapat menyebabkan kelumpuhan permanen, gangguan bicara, hingga hilangnya nyawa jika tidak ditangani cepat.
+                        <p class="text-xs sm:text-sm text-sky-800 leading-relaxed">
+                            Terjadi akibat pembuluh darah otak tersumbat gumpalan darah atau plak lemak kolesterol. Merupakan jenis stroke terbanyak (80-85%).
+                        </p>
+                    </div>
+
+                    <div class="bg-rose-50 rounded-2xl p-5 border-2 border-rose-200 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">💥</span>
+                            <h4 class="font-fredoka text-xl font-bold text-rose-900">2. Stroke Hemoragik (Perdarahan)</h4>
                         </div>
+                        <p class="text-xs sm:text-sm text-rose-800 leading-relaxed">
+                            Terjadi ketika pembuluh darah di otak pecah, sehingga darah menekan sel-sel otak. Sering dipicu oleh tekanan darah tinggi (hipertensi) tak terkontrol.
+                        </p>
                     </div>
                 </div>
 
-                <!-- Kenali Gejala SeGeRa Ke RS -->
-                <div class="bg-rose-50/70 border border-rose-100 p-5 rounded-2xl">
-                    <h3 class="font-display font-bold text-rose-900 text-lg mb-2 flex items-center space-x-2">
-                        <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
-                        <span>2. Kenali Gejala Segera (Metode "SeGeRa Ke RS")</span>
-                    </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3 text-xs">
-                        <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm">
-                            <strong class="text-rose-700 block mb-1">👄 Senyum Tidak Simetris</strong>
-                            Sudut mulut terturun sebelah atau mencong saat tersenyum.
-                        </div>
-                        <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm">
-                            <strong class="text-rose-700 block mb-1">💪 Gerak Anggota Tubuh Lemah</strong>
-                            Lengan atau kaki terasa melemah atau lumpuh sebelah badan.
-                        </div>
-                        <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm">
-                            <strong class="text-rose-700 block mb-1">🗣️ Rawatan Bicara Terganggu</strong>
-                            Bicara pelo, cadel, tidak jelas, atau tidak nyambung saat diajak bicara.
-                        </div>
-                        <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm">
-                            <strong class="text-rose-700 block mb-1">⚡ Kesemutan / Mati Rasa</strong>
-                            Separuh badan mendadak mati rasa atau kesemutan parah.
-                        </div>
-                        <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm">
-                            <strong class="text-rose-700 block mb-1">👁️ Rabun / Pandangan Kabur</strong>
-                            Penglihatan kabur tiba-tiba pada salah satu atau kedua mata.
-                        </div>
-                        <div class="bg-white p-3 rounded-xl border border-rose-200 shadow-sm">
-                            <strong class="text-rose-700 block mb-1">🌀 Sakit Kepala Hebat & Vertigo</strong>
-                            Sakit kepala mendadak tanpa sebab jelas disertai pusing berputar.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tindakan Darurat & Golden Hour -->
-                <div class="bg-emerald-50/70 border border-emerald-100 p-5 rounded-2xl">
-                    <h3 class="font-display font-bold text-emerald-900 text-lg mb-2 flex items-center space-x-2">
-                        <i class="fa-solid fa-clock text-emerald-600"></i>
-                        <span>3. Tindakan Darurat & Golden Hour (< 60 Menit di RS)</span>
-                    </h3>
-                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 leading-relaxed">
-                        <li><strong>Jangan Beri Makan/Minum:</strong> Hindari risiko tersedak karena fungsi menelan bisa terganggu.</li>
-                        <li><strong>Cari Bantuan Segera:</strong> Telepon ambulans gawat darurat atau siapkan kendaraan ke IGD RS terdekat.</li>
-                        <li><strong>Catat Waktu Onset:</strong> Kapan tepatnya gejala pertama kali muncul? Ini sangat krusial bagi dokter!</li>
-                        <li><strong>Diagnosis Cepat:</strong> Pemeriksaan fisik neurologis, lab darurat, dan CT-Scan Kepala tanpa kontras dalam 60 menit pertama.</li>
+                <!-- Penyakit Otak Lainnya -->
+                <div class="bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 mt-4 space-y-3">
+                    <h4 class="font-fredoka text-lg font-bold text-purple-900 flex items-center gap-2">
+                        <span>🧩</span> Penyakit Otak Lain Selain Stroke:
+                    </h4>
+                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-purple-900 font-medium">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-600"></i> <strong>Demensia / Alzheimer:</strong> Penurunan daya ingat & cara berpikir.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-600"></i> <strong>Epilepsi:</strong> Gangguan listrik otak memicu kejang.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-600"></i> <strong>Meningitis:</strong> Infeksi/radang selaput otak.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-600"></i> <strong>Tumor Otak:</strong> Pertumbuhan sel abnormal di jaringan otak.</li>
                     </ul>
                 </div>
+            </div>
 
-                <!-- Jalur Penanganan & Rehabilitasi -->
-                <div class="bg-indigo-50/70 border border-indigo-100 p-5 rounded-2xl">
-                    <h3 class="font-display font-bold text-indigo-900 text-lg mb-2 flex items-center space-x-2">
-                        <i class="fa-solid fa-hospital text-indigo-600"></i>
-                        <span>4. Jenis Stroke & Perawatan Rehabilitasi</span>
+            <!-- Section 2: Ciri Gejala "SeGeRa Ke RS" -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-gray-100 pb-3 gap-2">
+                    <h3 class="font-fredoka text-2xl font-bold text-brandDark flex items-center gap-3">
+                        <span class="text-3xl">🚨</span> Gejala Awal: Metode "SeGeRa Ke RS"
                     </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs mt-3">
-                        <div class="bg-white p-4 rounded-xl border border-indigo-200 shadow-sm">
-                            <strong class="text-indigo-700 block mb-1 text-sm"><i class="fa-solid fa-droplet-slash"></i> Jalur A: Stroke Iskemik (Sumbatan)</strong>
-                            Tidak ada perdarahan di CT-scan. Jika onset < 4.5 jam diberi obat pelarut bekuan darah (rtPA) atau trombektomi mekanik.
-                        </div>
-                        <div class="bg-white p-4 rounded-xl border border-indigo-200 shadow-sm">
-                            <strong class="text-indigo-700 block mb-1 text-sm"><i class="fa-solid fa-burst"></i> Jalur B: Stroke Hemoragik (Perdarahan)</strong>
-                            Terdapat perdarahan di otak. Stabilisasi tekanan darah ketat dan evaluasi bedah saraf (operasi kraniotomi jika perlu).
+                    <span class="bg-rose-100 text-rose-700 font-fredoka font-bold text-xs px-3 py-1 rounded-full">Ingat Kode Ini!</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="p-4 rounded-2xl bg-amber-50 border-2 border-amber-200 flex space-x-3 items-start">
+                        <span class="font-fredoka font-extrabold text-2xl text-amber-600 bg-amber-200 w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">Se</span>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-amber-900">Senyum tidak simetris</h4>
+                            <p class="text-xs text-amber-800">Mulut mencong atau tertarik ke satu sisi.</p>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-600 mt-3 leading-relaxed">
-                        <strong>Rehabilitasi Medik Dini:</strong> Fisioterapi, terapi wicara, dan terapi okupasi dimulai 24-48 jam setelah pasien stabil untuk mengembalikan fungsi tubuh secara optimal.
-                    </p>
+                    <div class="p-4 rounded-2xl bg-blue-50 border-2 border-blue-200 flex space-x-3 items-start">
+                        <span class="font-fredoka font-extrabold text-2xl text-blue-600 bg-blue-200 w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">Ge</span>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-blue-900">Gerak tubuh melemah</h4>
+                            <p class="text-xs text-blue-800">Lumpuh atau lemas sebelah badan.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 flex space-x-3 items-start">
+                        <span class="font-fredoka font-extrabold text-2xl text-emerald-600 bg-emerald-200 w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">Ra</span>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-emerald-900">Rawatan bicara terganggu</h4>
+                            <p class="text-xs text-emerald-800">Bicara pelo atau tidak nyambung.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-purple-50 border-2 border-purple-200 flex space-x-3 items-start">
+                        <span class="font-fredoka font-extrabold text-2xl text-purple-600 bg-purple-200 w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">Ke</span>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-purple-900">Kesemutan separuh badan</h4>
+                            <p class="text-xs text-purple-800">Mati rasa di satu sisi tubuh.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-pink-50 border-2 border-pink-200 flex space-x-3 items-start">
+                        <span class="font-fredoka font-extrabold text-2xl text-pink-600 bg-pink-200 w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">Rab</span>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-pink-900">Rabun / Pandangan kabur</h4>
+                            <p class="text-xs text-pink-800">Pandangan kabur mendadak.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-rose-50 border-2 border-rose-200 flex space-x-3 items-start">
+                        <span class="font-fredoka font-extrabold text-2xl text-rose-600 bg-rose-200 w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">S</span>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-rose-900">Sakit kepala hebat & vertigo</h4>
+                            <p class="text-xs text-rose-800">Nyeri kepala mendadak & pusing berputar.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <!-- ================= PAGE 3: EKSPLORASI INTERAKTIF & SIMULASI LAB ================= -->
-        <section id="page-simulasi" class="hidden w-full bg-white rounded-3xl shadow-xl border border-indigo-100 p-6 sm:p-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-4 mb-6">
-                <div>
-                    <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">NeuroLab Smart</span>
-                    <h2 class="font-display font-bold text-2xl text-slate-900">Simulasi Kartu Pasien & Lab</h2>
+            <!-- Section 3: Alur Penanganan Medis 6 Langkah -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-6">
+                <h3 class="font-fredoka text-2xl font-bold text-brandDark flex items-center gap-3 border-b-2 border-gray-100 pb-3">
+                    <span class="text-3xl">🏥</span> Alur Penanganan Medis Pertolongan Stroke (6 Langkah)
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- Step 1 -->
+                    <div class="flex items-start space-x-4 bg-gray-50 p-4 rounded-2xl border-l-4 border-brandPink">
+                        <div class="w-8 h-8 rounded-full bg-brandPink text-white font-fredoka font-bold flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-gray-800">Pengenalan Gejala Awal di Rumah</h4>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                                Kenali gejala "SeGeRa Ke RS". <strong>Catatan: Jangan beri makan/minum (hindari risiko tersedak)!</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex items-start space-x-4 bg-gray-50 p-4 rounded-2xl border-l-4 border-brandBlue">
+                        <div class="w-8 h-8 rounded-full bg-brandBlue text-white font-fredoka font-bold flex items-center justify-center flex-shrink-0">2</div>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-gray-800">Tindakan Darurat Pertama</h4>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                                Cari bantuan medis segera (ambulans/kendaraan pribadi) & <strong>Catat Waktu Onset</strong> (kapan gejala pertama muncul).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex items-start space-x-4 bg-gray-50 p-4 rounded-2xl border-l-4 border-amber-500">
+                        <div class="w-8 h-8 rounded-full bg-amber-500 text-white font-fredoka font-bold flex items-center justify-center flex-shrink-0">3</div>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-gray-800">Transportasi & Triase di Rumah Sakit</h4>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                                Transportasi cepat ke RS berfasilitas CT-Scan 24 jam → Masuk IGD (Triase Merah / Prioritas Utama).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flex items-start space-x-4 bg-gray-50 p-4 rounded-2xl border-l-4 border-purple-500">
+                        <div class="w-8 h-8 rounded-full bg-purple-500 text-white font-fredoka font-bold flex items-center justify-center flex-shrink-0">4</div>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-gray-800">Diagnosis Medis Cepat (Golden Hour: &lt; 60 Menit di RS)</h4>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                                Pemeriksaan fisik & saraf singkat → Tes laboratorium darurat (gula & pembekuan darah) → CT-Scan / MRI Otak.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="flex items-start space-x-4 bg-gray-50 p-4 rounded-2xl border-l-4 border-brandGreen">
+                        <div class="w-8 h-8 rounded-full bg-brandGreen text-white font-fredoka font-bold flex items-center justify-center flex-shrink-0">5</div>
+                        <div class="space-y-2 w-full">
+                            <h4 class="font-fredoka font-bold text-gray-800">Penentuan Jenis Stroke & Strategi Terapi</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm pt-1">
+                                <div class="bg-blue-100/70 p-3 rounded-xl">
+                                    <strong class="text-blue-900 block font-fredoka">Jalur A: Stroke Iskemik (Sumbatan)</strong>
+                                    • Onset &lt; 4.5 Jam: Terapi Trombolisis (rtPA) pelebur sumbatan.<br>
+                                    • Onset &lt; 24 Jam: Trombektomi Mekanik (kateterisasi).
+                                </div>
+                                <div class="bg-rose-100/70 p-3 rounded-xl">
+                                    <strong class="text-rose-900 block font-fredoka">Jalur B: Stroke Hemoragik (Perdarahan)</strong>
+                                    • Stabilisasi tekanan darah secara ketat.<br>
+                                    • Konsultasi Bedah Saraf untuk evaluasi operasi kraniotomi.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="flex items-start space-x-4 bg-gray-50 p-4 rounded-2xl border-l-4 border-teal-500">
+                        <div class="w-8 h-8 rounded-full bg-teal-500 text-white font-fredoka font-bold flex items-center justify-center flex-shrink-0">6</div>
+                        <div>
+                            <h4 class="font-fredoka font-bold text-gray-800">Perawatan Pasca-Akut & Rehabilitasi Dini</h4>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                                Perawatan di Stroke Unit / ICU → Rehabilitasi Dini (Fisioterapi, terapi wicara, okupasi) → Kontrol rutin rawat jalan.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <button onclick="loadRandomPatient()" class="mt-3 sm:mt-0 px-4 py-2 bg-emerald-600 text-white font-semibold text-xs rounded-xl hover:bg-emerald-700 transition flex items-center space-x-2 shadow-sm">
-                    <i class="fa-solid fa-shuffle"></i>
-                    <span>Ambil Kartu Pasien Lain</span>
+            </div>
+
+            <!-- Navigation Bar Bottom -->
+            <div class="flex justify-between items-center pt-4">
+                <button onclick="playAudioTap(); navigateTo('page-2')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-fredoka font-bold px-6 py-3 rounded-2xl transition">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-4')" class="bg-brandPurple hover:bg-purple-700 text-white font-fredoka font-bold px-6 py-3 rounded-2xl transition shadow-lg">
+                    Lanjut ke Lab Detektif <i class="fa-solid fa-arrow-right ml-2"></i>
                 </button>
             </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Patient Card Details -->
-                <div class="lg:col-span-5 bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-6 rounded-2xl shadow-lg flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="bg-indigo-500/30 text-indigo-300 px-3 py-1 rounded-full text-xs font-semibold" id="card-id">Kasus 01</span>
-                            <span class="text-xs text-slate-400"><i class="fa-solid fa-id-card"></i> Kartu Simulasi Medis</span>
-                        </div>
-                        <h3 class="font-display font-bold text-xl text-white mb-2" id="patient-name">Pak Budi, 52 Tahun</h3>
-                        <div class="space-y-2 text-xs text-indigo-100/90 mb-6 bg-white/5 p-4 rounded-xl border border-white/10">
-                            <p class="flex items-center space-x-2"><i class="fa-solid fa-person-running text-emerald-400 w-5"></i><span id="p-habit1">Jarang olahraga</span></p>
-                            <p class="flex items-center space-x-2"><i class="fa-solid fa-burger text-amber-400 w-5"></i><span id="p-habit2">Sering makan makanan berlemak</span></p>
-                            <p class="flex items-center space-x-2"><i class="fa-solid fa-glass-water text-sky-400 w-5"></i><span id="p-habit3">Sering haus & mudah lelah</span></p>
-                            <p class="flex items-center space-x-2"><i class="fa-solid fa-gauge-high text-rose-400 w-5"></i><span id="p-habit4">Tekanan darah sering tinggi</span></p>
-                        </div>
-                    </div>
-                    <div>
-                        <button onclick="runLabSimulation()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-display font-semibold rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-syringe"></i>
-                            <span>Masukkan Sampel ke NeuroLab & Periksa</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Lab Processing & Results Area -->
-                <div class="lg:col-span-7 flex flex-col justify-between bg-slate-50 border border-slate-200 p-6 rounded-2xl">
-                    <div id="lab-state-container">
-                        <div class="text-center py-12" id="lab-idle-msg">
-                            <div class="w-16 h-16 mx-auto bg-slate-200 text-slate-400 rounded-full flex items-center justify-center text-2xl mb-3">
-                                <i class="fa-solid fa-microscope"></i>
-                            </div>
-                            <h4 class="font-display font-bold text-slate-700">Slot Sampel Kosong</h4>
-                            <p class="text-xs text-slate-500 mt-1">Klik tombol "Masukkan Sampel ke NeuroLab & Periksa" untuk memproses data pemeriksaan darah.</p>
-                        </div>
-
-                        <!-- Progress Loading Bar -->
-                        <div id="lab-loading" class="hidden text-center py-12">
-                            <div class="w-16 h-16 mx-auto bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-2xl animate-spin mb-4">
-                                <i class="fa-solid fa-spinner"></i>
-                            </div>
-                            <h4 class="font-display font-bold text-indigo-900 text-lg">SAMPEL SEDANG DIPERIKSA...</h4>
-                            <p class="text-xs text-slate-500 mt-1 mb-4">Menganalisis profil metabolik & pembuluh darah</p>
-                            <div class="w-full max-w-xs mx-auto bg-slate-200 rounded-full h-3 overflow-hidden">
-                                <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
-                            </div>
-                            <span id="progress-text" class="text-xs font-bold text-emerald-600 mt-2 block">0%</span>
-                        </div>
-
-                        <!-- Result Table -->
-                        <div id="lab-results" class="hidden">
-                            <div class="flex justify-between items-center mb-3">
-                                <h4 class="font-display font-bold text-slate-800 text-sm flex items-center space-x-2">
-                                    <i class="fa-solid fa-file-waveform text-indigo-600"></i>
-                                    <span>Lembar Hasil Laboratorium Pasien</span>
-                                </h4>
-                                <span class="bg-amber-100 text-amber-800 text-[10px] font-semibold px-2.5 py-0.5 rounded-full">Simulasi Edukasi</span>
-                            </div>
-
-                            <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-                                <table class="w-full text-left text-xs">
-                                    <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
-                                        <tr>
-                                            <th class="p-2.5">Pemeriksaan</th>
-                                            <th class="p-2.5">Hasil Simulasi</th>
-                                            <th class="p-2.5">Interpretasi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="lab-table-body" class="divide-y divide-slate-100">
-                                        <!-- Populated via JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-                            <p class="text-[10px] text-slate-400 mt-2 italic">*Catatan: Angka simulasi untuk edukasi, bukan diagnosis klinis resmi.</p>
-                        </div>
-                    </div>
-
-                    <!-- Hubungan dengan Otak Card (Hidden initially) -->
-                    <div id="brain-connection-box" class="hidden mt-4 bg-indigo-50 border border-indigo-200 p-4 rounded-xl animate-fade-in">
-                        <h5 class="font-display font-bold text-indigo-900 text-xs mb-2 flex items-center space-x-1.5">
-                            <i class="fa-solid fa-brain text-indigo-600"></i>
-                            <span>Apa Hubungannya dengan Otak & Pembuluh Darah?</span>
-                        </h5>
-                        <p class="text-xs text-slate-700 leading-relaxed mb-3" id="brain-connection-text">
-                            Gula darah & Kolesterol LDL yang tinggi dalam jangka panjang dapat merusak dinding pembuluh darah, memicu plak (aterosklerosis), menyempitkan aliran darah, dan meningkatkan risiko stroke iskemik pada otak!
-                        </p>
-                        <button onclick="startMiniDetectiveGame()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow transition flex items-center space-x-2">
-                            <span>Mulai Tantangan Detektif Otak</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </section>
 
-        <!-- ================= PAGE 4: GAME DETEKTIF OTAK ================= -->
-        <section id="page-game" class="hidden w-full bg-white rounded-3xl shadow-xl border border-indigo-100 p-6 sm:p-8">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+        <!-- ================= HALAMAN 4: EKSPLORASI INTERAKTIF (LAB DETEKTIF) ================= -->
+        <section id="page-4" class="page-view hidden space-y-8">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-brandGreen to-emerald-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex items-center justify-between">
                 <div>
-                    <span class="text-xs font-bold text-violet-600 tracking-wider uppercase">Mini Game Edukasi</span>
-                    <h2 class="font-display font-bold text-2xl text-slate-900">🕵️ Level 2 — Selamatkan Pembuluh Darah Otak</h2>
+                    <span class="bg-white/20 font-fredoka text-xs px-3 py-1 rounded-full uppercase tracking-wider">Tahap 3: Eksplorasi Interaktif</span>
+                    <h2 class="font-fredoka text-2xl sm:text-4xl font-bold mt-1">NeuroLab Smart Detective 🔬</h2>
+                    <p class="text-white/90 text-sm sm:text-base">Pilih kartu pasien, uji sampel darah, dan pahami hubungannya dengan pembuluh darah otak!</p>
                 </div>
-                <div class="bg-violet-50 text-violet-700 px-3 py-1 rounded-xl text-xs font-bold">
-                    Poin: <span id="game-score">0</span>
-                </div>
+                <div class="text-6xl hidden sm:block animate-pulse">🧪</div>
             </div>
 
-            <div id="game-card-container" class="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-6 rounded-2xl">
-                <div id="game-question-area">
-                    <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" id="game-level-badge">Tantangan 1 dari 3</span>
-                    <h3 class="font-display font-bold text-lg text-slate-900 mt-3 mb-4" id="game-question-title">Apa yang menjadi perhatian utama dari hasil pemeriksaan pasien dengan kadar HbA1c dan LDL tinggi?</h3>
-                    
-                    <div id="game-options" class="space-y-3">
-                        <!-- Populated via JS -->
+            <!-- 1. Patient Cards -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-4">
+                <h3 class="font-fredoka text-xl font-bold text-brandDark flex items-center gap-2">
+                    <span class="text-2xl">👨‍⚕️</span> Langkah 1: Pilih Kartu Kasus Pasien
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                    <!-- Patient 1 -->
+                    <div onclick="selectPatient(1)" id="patient-card-1" class="patient-card border-4 border-brandBlue bg-blue-50/50 p-5 rounded-2xl cursor-pointer hover:shadow-md transition relative">
+                        <div class="text-4xl mb-2">👨 Kasus 01</div>
+                        <h4 class="font-fredoka font-bold text-brandDark text-lg">Pak Budi (52 Th)</h4>
+                        <ul class="text-xs text-gray-600 space-y-1 mt-2 font-medium">
+                            <li>• Jarang berolahraga</li>
+                            <li>• Sering makan berlemak</li>
+                            <li>• Sering haus & mudah lelah</li>
+                            <li>• Tekanan darah sering tinggi</li>
+                        </ul>
+                    </div>
+
+                    <!-- Patient 2 -->
+                    <div onclick="selectPatient(2)" id="patient-card-2" class="patient-card border-2 border-gray-200 p-5 rounded-2xl cursor-pointer hover:shadow-md transition relative opacity-60">
+                        <div class="text-4xl mb-2">👩 Kasus 02</div>
+                        <h4 class="font-fredoka font-bold text-brandDark text-lg">Ibu Maya (45 Th)</h4>
+                        <ul class="text-xs text-gray-600 space-y-1 mt-2 font-medium">
+                            <li>• Gemar minum manis</li>
+                            <li>• Kurang aktivitas fisik</li>
+                            <li>• Riwayat gula tinggi</li>
+                            <li>• Sering pusing berputar</li>
+                        </ul>
+                    </div>
+
+                    <!-- Patient 3 -->
+                    <div onclick="selectPatient(3)" id="patient-card-3" class="patient-card border-2 border-gray-200 p-5 rounded-2xl cursor-pointer hover:shadow-md transition relative opacity-60">
+                        <div class="text-4xl mb-2">👴 Kasus 03</div>
+                        <h4 class="font-fredoka font-bold text-brandDark text-lg">Pak Joko (65 Th)</h4>
+                        <ul class="text-xs text-gray-600 space-y-1 mt-2 font-medium">
+                            <li>• Perokok aktif</li>
+                            <li>• Riwayat kolesterol</li>
+                            <li>• Kurang olahraga</li>
+                            <li>• Kaku pada tengkuk</li>
+                        </ul>
                     </div>
                 </div>
 
-                <div id="game-feedback" class="hidden mt-4 p-4 rounded-xl text-center">
-                    <h4 id="feedback-title" class="font-display font-bold text-lg mb-1">🎉 BENAR!</h4>
-                    <p id="feedback-desc" class="text-xs text-slate-600 mb-4">Pemeriksaan laboratorium membantu kita mengetahui faktor risiko pembuluh darah otak.</p>
-                    <button onclick="nextGameStep()" class="px-6 py-2.5 bg-violet-600 text-white font-semibold text-xs rounded-xl hover:bg-violet-700 transition">
-                        Lanjut Tantangan Berikutnya
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= PAGE 5: KUIS 20 SOAL ================= -->
-        <section id="page-kuis" class="hidden w-full bg-white rounded-3xl shadow-xl border border-indigo-100 p-6 sm:p-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-4 mb-6">
-                <div>
-                    <span class="text-xs font-bold text-indigo-600 tracking-wider uppercase">Evaluasi Akhir</span>
-                    <h2 class="font-display font-bold text-2xl text-slate-900">🧠 Kuis NeuroLab Smart (20 Soal)</h2>
-                </div>
-                <div class="mt-2 sm:mt-0 bg-indigo-50 text-indigo-700 px-4 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-2">
-                    <span>Soal ke-<span id="quiz-current-num">1</span>/20</span>
+                <!-- Lab Request Question -->
+                <div class="bg-amber-50 rounded-2xl p-5 border-2 border-amber-200 space-y-3 mt-4">
+                    <p class="font-fredoka font-bold text-amber-900 text-sm sm:text-base">
+                        “Pemeriksaan apa yang perlu diperhatikan untuk mengetahui faktor risiko metabolik yang dapat berhubungan dengan kesehatan pembuluh darah?”
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold">
+                        <button onclick="answerLabReq(this, true)" class="bg-white hover:bg-amber-100 border border-amber-300 p-2.5 rounded-xl text-amber-900 transition">HbA1c</button>
+                        <button onclick="answerLabReq(this, true)" class="bg-white hover:bg-amber-100 border border-amber-300 p-2.5 rounded-xl text-amber-900 transition">Glukosa darah</button>
+                        <button onclick="answerLabReq(this, true)" class="bg-white hover:bg-amber-100 border border-amber-300 p-2.5 rounded-xl text-amber-900 transition">Profil lipid</button>
+                        <button onclick="answerLabReq(this, true)" class="bg-amber-500 hover:bg-amber-600 text-white p-2.5 rounded-xl transition shadow">Semua benar</button>
+                    </div>
+                    <div id="lab-req-feedback" class="hidden p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-bold"></div>
                 </div>
             </div>
 
-            <div id="quiz-box" class="max-w-3xl mx-auto bg-slate-50 border border-slate-200 p-6 rounded-2xl">
-                <div class="mb-4">
-                    <h3 id="quiz-question-text" class="font-display font-bold text-base sm:text-lg text-slate-900 leading-snug">
-                        1. Apa fungsi utama otak bagi tubuh?
-                    </h3>
-                </div>
-
-                <div id="quiz-options-container" class="space-y-3 mb-6">
-                    <!-- Populated via JS -->
-                </div>
-
-                <div class="flex justify-between items-center pt-4 border-t border-slate-200">
-                    <span class="text-xs text-slate-500 font-medium">Pilih salah satu jawaban yang paling tepat.</span>
-                    <button id="quiz-next-btn" onclick="submitQuizAnswer()" disabled class="px-6 py-2.5 bg-indigo-300 text-white font-semibold text-xs rounded-xl cursor-not-allowed transition">
-                        Jawab & Lanjut
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quiz Result Container -->
-            <div id="quiz-result-box" class="hidden max-w-2xl mx-auto bg-gradient-to-br from-indigo-900 to-violet-900 text-white p-8 rounded-3xl text-center shadow-2xl">
-                <div class="w-20 h-20 mx-auto bg-emerald-500 text-white rounded-full flex items-center justify-center text-3xl shadow-lg mb-4 animate-bounce-slow">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
-                <h3 class="font-display font-bold text-2xl mb-2">Hebat! Kamu sudah menjadi Ahli Kesehatan Otak dan Stroke!</h3>
-                <p class="text-xs text-indigo-200 mb-6">Skor akhir kuis kamu telah tercatat untuk laporan pembelajaran.</p>
+            <!-- 2. Blood Sample Animation Machine -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-6 text-center">
+                <h3 class="font-fredoka text-xl font-bold text-brandDark">
+                    🩸 Langkah 2: Simulasi "Ambil Sampel Darah"
+                </h3>
                 
-                <div class="bg-white/10 p-4 rounded-2xl border border-white/10 max-w-sm mx-auto mb-6 text-sm space-y-2">
-                    <p>Nama: <strong id="res-name">-</strong></p>
-                    <p>Usia & Alamat: <strong id="res-info">-</strong></p>
-                    <p class="text-lg font-bold text-emerald-400">Skor Kuis: <span id="res-score">0</span> / 100</p>
+                <div class="max-w-md mx-auto space-y-4">
+                    <button id="run-lab-btn" onclick="startLabSimulation()" class="bg-brandPink hover:bg-rose-600 text-white font-fredoka font-bold text-lg px-8 py-3.5 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center justify-center space-x-2 mx-auto border-b-4 border-rose-800">
+                        <i class="fa-solid fa-vial text-xl"></i>
+                        <span>Masukkan Sampel Darah Ke Slot Machine</span>
+                    </button>
+
+                    <!-- Progress Bar Container -->
+                    <div id="lab-progress-container" class="hidden space-y-3 bg-gray-50 p-6 rounded-2xl border-2 border-gray-200">
+                        <div class="flex justify-between font-fredoka text-xs text-gray-600 font-bold">
+                            <span id="lab-status-text">SAMPEL SEDANG DIPERIKSA...</span>
+                            <span id="lab-percent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 h-6 rounded-full overflow-hidden p-1 shadow-inner">
+                            <div id="lab-progress-bar" class="bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 h-full rounded-full transition-all duration-300 w-0"></div>
+                        </div>
+                        <div class="flex justify-center space-x-2 text-xs font-bold text-gray-600 pt-1">
+                            <span>✓ Glukosa</span> • <span>✓ HbA1c</span> • <span>✓ Kolesterol total</span> • <span>✓ LDL</span> • <span>✓ HDL</span> • <span>✓ Trigliserida</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Laboratory Result Sheet -->
+            <div id="lab-result-section" class="hidden bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-gray-100 pb-4 gap-2">
+                    <div>
+                        <span class="bg-blue-100 text-brandBlue font-fredoka text-xs px-3 py-1 rounded-full font-bold">3. Hasil Laboratorium</span>
+                        <h3 class="font-fredoka text-2xl font-bold text-brandDark mt-1" id="patient-name-display">Lembar Hasil Simulasi: Pak Budi</h3>
+                    </div>
+                    <span class="text-xs bg-amber-100 text-amber-800 px-3 py-1.5 rounded-lg font-medium border border-amber-300">
+                        Catatan penting: data simulasi untuk edukasi, bukan diagnosis.
+                    </span>
                 </div>
 
-                <div class="flex flex-wrap justify-center gap-3">
-                    <button onclick="exportToSpreadsheet()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs rounded-xl shadow transition flex items-center space-x-2">
-                        <i class="fa-solid fa-file-excel"></i>
-                        <span>Simpan & Ekspor ke Google Spreadsheet</span>
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-gray-100 text-gray-700 font-fredoka">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Pemeriksaan</th>
+                                <th class="p-3">Hasil Simulasi</th>
+                                <th class="p-3 rounded-r-xl">Interpretasi Edukasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lab-table-body" class="divide-y divide-gray-100 font-semibold text-gray-800">
+                            <!-- Populated dynamically by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 4. What is the relation to the Brain? -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-6 sm:p-8 space-y-6">
+                    <h4 class="font-fredoka text-xl font-bold text-brandYellow flex items-center gap-2">
+                        <span>🧠</span> Apa Hubungannya dengan Otak?
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 text-xs sm:text-sm">
+                        <!-- Flow 1 -->
+                        <div class="bg-white/10 p-5 rounded-2xl border border-white/10 space-y-2">
+                            <span class="bg-rose-500 text-white text-xs font-fredoka px-2.5 py-1 rounded-full font-bold">Jalur Gula Darah (HbA1c)</span>
+                            <div class="space-y-1 font-fredoka text-amber-300 pt-2 font-bold">
+                                <div>HbA1c ↑</div>
+                                <div>↓</div>
+                                <div>Gula darah tidak terkontrol</div>
+                                <div>↓</div>
+                                <div>Dapat berkontribusi terhadap kerusakan pembuluh darah</div>
+                                <div>↓</div>
+                                <div class="text-white bg-rose-600/50 p-2 rounded-xl border border-rose-400">🧠 Pembuluh darah otak perlu dijaga</div>
+                            </div>
+                        </div>
+
+                        <!-- Flow 2 -->
+                        <div class="bg-white/10 p-5 rounded-2xl border border-white/10 space-y-2">
+                            <span class="bg-amber-500 text-white text-xs font-fredoka px-2.5 py-1 rounded-full font-bold">Jalur Kolesterol (LDL)</span>
+                            <div class="space-y-1 font-fredoka text-amber-300 pt-2 font-bold">
+                                <div>LDL ↑</div>
+                                <div>↓</div>
+                                <div>Risiko terbentuknya plak aterosklerotik meningkat</div>
+                                <div>↓</div>
+                                <div>🩸 Pembuluh darah dapat mengalami penyempitan/penyumbatan</div>
+                                <div>↓</div>
+                                <div class="text-white bg-amber-600/50 p-2 rounded-xl border border-amber-400">🧠 Risiko stroke iskemik dapat meningkat</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Brain Detective Game Level -->
+                <div class="bg-blue-50 border-2 border-blue-200 rounded-3xl p-6 space-y-4">
+                    <h4 class="font-fredoka text-lg font-bold text-brandDark">
+                        🕵️ Game "Detektif Otak": Bantu NeuroLab menemukan faktor risiko pasien!
+                    </h4>
+                    <p class="text-xs sm:text-sm text-gray-700 font-bold">Apa yang menjadi perhatian utama dari hasil pemeriksaan Pak Budi?</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <button onclick="answerDetectiveMission(this, true)" class="p-3 bg-white border border-blue-200 rounded-xl text-left font-semibold text-xs sm:text-sm hover:bg-blue-100 transition">
+                            Semua benar (HbA1c tinggi, LDL tinggi, HDL rendah)
+                        </button>
+                        <button onclick="answerDetectiveMission(this, false)" class="p-3 bg-white border border-blue-200 rounded-xl text-left font-semibold text-xs sm:text-sm hover:bg-blue-100 transition">
+                            Hanya HbA1c tinggi saja
+                        </button>
+                    </div>
+
+                    <div id="detective-feedback-level2" class="hidden space-y-4 border-t border-blue-200 pt-4">
+                        <div class="p-4 rounded-2xl bg-emerald-100 text-emerald-800 font-bold text-sm">
+                            🎉 BENAR! Beberapa hasil pemeriksaan menunjukkan faktor yang perlu diperhatikan dalam menjaga kesehatan pembuluh darah.
+                        </div>
+                        
+                        <div class="bg-white p-5 rounded-2xl border-2 border-emerald-300 space-y-3">
+                            <h5 class="font-fredoka font-bold text-brandDark text-base">🧠 LEVEL 2 — SELAMATKAN PEMBULUH DARAH OTAK</h5>
+                            <p class="text-xs text-gray-600">Cocokkan faktor risiko dengan tindakan pencegahan tepat:</p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-bold text-center">
+                                <div class="p-3 bg-purple-100 text-purple-900 rounded-xl border border-purple-300">
+                                    HbA1c tinggi <br> ➔ 🩸 Kontrol gula darah
+                                </div>
+                                <div class="p-3 bg-rose-100 text-rose-900 rounded-xl border border-rose-300">
+                                    LDL tinggi <br> ➔ 🫀 Perhatikan profil lipid
+                                </div>
+                                <div class="p-3 bg-blue-100 text-blue-900 rounded-xl border border-blue-300">
+                                    Tekanan darah tinggi <br> ➔ 🩸 Jaga tekanan darah
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Bar Bottom -->
+            <div class="flex justify-between items-center pt-4">
+                <button onclick="playAudioTap(); navigateTo('page-3')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-fredoka font-bold px-6 py-3 rounded-2xl transition">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-5')" class="bg-brandGreen hover:bg-emerald-600 text-white font-fredoka font-bold px-6 py-3 rounded-2xl transition shadow-lg">
+                    Lanjut ke Mini Game <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= HALAMAN 5: PERMAINAN EDUKATIF ================= -->
+        <section id="page-5" class="page-view hidden space-y-8">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-amber-400 to-orange-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex items-center justify-between">
+                <div>
+                    <span class="bg-white/20 font-fredoka text-xs px-3 py-1 rounded-full uppercase tracking-wider">Tahap 4: Permainan Edukatif</span>
+                    <h2 class="font-fredoka text-2xl sm:text-4xl font-bold mt-1">Arena Mini Games Brainy 🎮</h2>
+                    <p class="text-white/90 text-sm sm:text-base">Cocokkan istilah laboratorium & susun puzzle urutan pertolongan darurat!</p>
+                </div>
+                <div class="text-6xl hidden sm:block animate-bounce-gentle">🎯</div>
+            </div>
+
+            <!-- Game 1: Matching / Drag and drop istilah lab & fungsinya -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-6">
+                <h3 class="font-fredoka text-xl font-bold text-brandDark flex items-center gap-2 border-b-2 border-gray-100 pb-3">
+                    <span>🧩</span> Game 1: Pasangkan Istilah Medis dengan Fungsinya!
+                </h3>
+                <p class="text-xs sm:text-sm text-gray-600">Klik pilihan istilah medis di sebelah kiri, lalu sentuh kotak target di sebelah kanan.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <!-- Options Sources -->
+                    <div class="space-y-3">
+                        <h4 class="font-fredoka text-sm font-bold text-gray-500">Istilah Medis:</h4>
+                        <div id="drag-items-container" class="space-y-2">
+                            <div onclick="selectMatchItem('HbA1c', this)" class="match-source-btn p-3.5 bg-purple-100 border-2 border-purple-300 text-purple-900 rounded-xl font-fredoka font-bold text-sm cursor-pointer hover:bg-purple-200 transition">
+                                🧪 HbA1c
+                            </div>
+                            <div onclick="selectMatchItem('LDL', this)" class="match-source-btn p-3.5 bg-rose-100 border-2 border-rose-300 text-rose-900 rounded-xl font-fredoka font-bold text-sm cursor-pointer hover:bg-rose-200 transition">
+                                🧈 LDL (Kolesterol Jahat)
+                            </div>
+                            <div onclick="selectMatchItem('HDL', this)" class="match-source-btn p-3.5 bg-emerald-100 border-2 border-emerald-300 text-emerald-900 rounded-xl font-fredoka font-bold text-sm cursor-pointer hover:bg-emerald-200 transition">
+                                🛡️ HDL (Kolesterol Baik)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Targets -->
+                    <div class="space-y-3">
+                        <h4 class="font-fredoka text-sm font-bold text-gray-500">Fungsi / Pengertian:</h4>
+                        <div class="space-y-3">
+                            <div onclick="applyMatchTarget('HbA1c', this)" class="p-3 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-blue-50 cursor-pointer transition flex flex-col justify-center min-h-[60px]">
+                                <span class="text-xs text-gray-600 font-medium">Mengukur rata-rata kadar gula darah dalam 2-3 bulan terakhir.</span>
+                                <span class="matched-slot font-fredoka font-bold text-xs text-purple-700 mt-1"></span>
+                            </div>
+                            <div onclick="applyMatchTarget('LDL', this)" class="p-3 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-blue-50 cursor-pointer transition flex flex-col justify-center min-h-[60px]">
+                                <span class="text-xs text-gray-600 font-medium">Jenis kolesterol yang berisiko membentuk plak pada pembuluh darah.</span>
+                                <span class="matched-slot font-fredoka font-bold text-xs text-rose-700 mt-1"></span>
+                            </div>
+                            <div onclick="applyMatchTarget('HDL', this)" class="p-3 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-blue-50 cursor-pointer transition flex flex-col justify-center min-h-[60px]">
+                                <span class="text-xs text-gray-600 font-medium">Kolesterol pelindung yang membantu membawa kolesterol kembali ke hati.</span>
+                                <span class="matched-slot font-fredoka font-bold text-xs text-emerald-700 mt-1"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game 2: Puzzle menyusun urutan pertolongan -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-6">
+                <h3 class="font-fredoka text-xl font-bold text-brandDark flex items-center gap-2 border-b-2 border-gray-100 pb-3">
+                    <span>🧩</span> Game 2: Puzzle Menyusun Proses Pertolongan Pertama Stroke!
+                </h3>
+                <p class="text-xs sm:text-sm text-gray-600">Gunakan panah ke atas/bawah untuk menyusun 4 langkah ini menjadi urutan yang benar!</p>
+
+                <div id="step-puzzle-container" class="space-y-3 pt-2">
+                    <div class="puzzle-step p-4 bg-gray-50 border-2 border-gray-200 rounded-2xl flex items-center justify-between font-semibold text-xs sm:text-sm cursor-pointer hover:border-brandBlue transition" data-step-id="1">
+                        <span>Langkah: Kenali Gejala "SeGeRa Ke RS" & Jangan Beri Makan/Minum</span>
+                        <div class="flex space-x-1">
+                            <button onclick="movePuzzleStep(this, -1)" class="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">▲</button>
+                            <button onclick="movePuzzleStep(this, 1)" class="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">▼</button>
+                        </div>
+                    </div>
+                    <div class="puzzle-step p-4 bg-gray-50 border-2 border-gray-200 rounded-2xl flex items-center justify-between font-semibold text-xs sm:text-sm cursor-pointer hover:border-brandBlue transition" data-step-id="3">
+                        <span>Langkah: Transportasi Cepat & Masuk Triase IGD RS (Fasilitas CT-Scan 24 Jam)</span>
+                        <div class="flex space-x-1">
+                            <button onclick="movePuzzleStep(this, -1)" class="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">▲</button>
+                            <button onclick="movePuzzleStep(this, 1)" class="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">▼</button>
+                        </div>
+                    </div>
+                    <div class="puzzle-step p-4 bg-gray-50 border-2 border-gray-200 rounded-2xl flex items-center justify-between font-semibold text-xs sm:text-sm cursor-pointer hover:border-brandBlue transition" data-step-id="2">
+                        <span>Langkah: Catat Waktu Onset Gejala & Hubungi Ambulans Gawat Darurat</span>
+                        <div class="flex space-x-1">
+                            <button onclick="movePuzzleStep(this, -1)" class="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">▲</button>
+                            <button onclick="movePuzzleStep(this, 1)" class="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">▼</button>
+                        </div>
+                    </div>
+                    <div class="puzzle-step p-4 bg-gray-50 border-2 border-gray-200 rounded-2xl flex items-center justify-between font-semibold text-xs sm:text-sm cursor-pointer hover:border-brandBlue transition" data-step-id="4">
+                        <span>Langkah: Diagnosis Medis Cepat (Golden Hour &lt; 60 Menit di RS)</span>
+                        <div class="flex space-x-1">
+                            <button onclick="movePuzzleStep(this, -1)" class="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">▲</button>
+                            <button onclick="movePuzzleStep(this, 1)" class="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold">▼</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-right pt-2">
+                    <button onclick="checkPuzzleOrder()" class="bg-amber-500 hover:bg-amber-600 text-white font-fredoka font-bold px-6 py-2.5 rounded-xl transition shadow">
+                        Periksa Urutan Puzzle 🧩
                     </button>
-                    <button onclick="restartApp()" class="px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white font-semibold text-xs rounded-xl transition">
-                        Ulangi Pembelajaran
+                </div>
+                <div id="puzzle-feedback" class="hidden p-4 rounded-2xl font-bold text-sm"></div>
+            </div>
+
+            <!-- Navigation Bar Bottom -->
+            <div class="flex justify-between items-center pt-4">
+                <button onclick="playAudioTap(); navigateTo('page-4')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-fredoka font-bold px-6 py-3 rounded-2xl transition">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-6')" class="bg-rose-500 hover:bg-rose-600 text-white font-fredoka font-bold px-6 py-3 rounded-2xl transition shadow-lg">
+                    Lanjut ke Kuis Evaluasi (20 Soal) <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= HALAMAN 6: EVALUASI (20 SOAL) ================= -->
+        <section id="page-6" class="page-view hidden space-y-8">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-rose-500 to-pink-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex items-center justify-between">
+                <div>
+                    <span class="bg-white/20 font-fredoka text-xs px-3 py-1 rounded-full uppercase tracking-wider">Tahap Akhir: Evaluasi Soal</span>
+                    <h2 class="font-fredoka text-2xl sm:text-4xl font-bold mt-1">🧠 20 Soal Kuis NeuroLab Smart</h2>
+                    <p class="text-white/90 text-sm sm:text-base">Pilihlah salah satu jawaban paling tepat untuk 20 soal di bawah ini!</p>
+                </div>
+                <div class="text-6xl hidden sm:block animate-pulse">🎓</div>
+            </div>
+
+            <!-- Quiz Container -->
+            <form id="quiz-form" class="space-y-6">
+                <div id="quiz-questions-list" class="space-y-6">
+                    <!-- 20 Soal diinjeksi lewat Javascript tanpa ada tanda centang sama sekali -->
+                </div>
+
+                <!-- Submit Button -->
+                <div class="bg-white p-6 rounded-3xl shadow-md border-2 border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p class="text-xs sm:text-sm text-gray-600 font-bold">Pastikan semua 20 soal sudah terjawab dengan benar!</p>
+                    <button type="button" onclick="submitQuiz()" class="w-full sm:w-auto bg-brandPink hover:bg-rose-600 text-white font-fredoka font-bold text-lg px-8 py-3.5 rounded-2xl shadow-xl transition transform hover:scale-105 border-b-4 border-rose-800">
+                        Kirim Jawaban & Lihat Skor 🚀
+                    </button>
+                </div>
+            </form>
+
+            <!-- Quiz Result Card -->
+            <div id="quiz-result-card" class="hidden bg-white rounded-3xl p-8 shadow-2xl border-4 border-brandYellow text-center space-y-6">
+                <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center text-6xl mx-auto shadow-inner animate-bounce">
+                    🏆
+                </div>
+                <h3 class="font-fredoka text-3xl font-extrabold text-brandDark">Hasil Evaluasi Pembelajaran</h3>
+                
+                <!-- Identitas Hasil -->
+                <div class="bg-gray-50 p-4 rounded-2xl max-w-md mx-auto text-xs sm:text-sm font-fredoka text-gray-700 space-y-1">
+                    <div><strong>Nama:</strong> <span id="res-nama">-</span></div>
+                    <div><strong>Usia / Kategori:</strong> <span id="res-usia">-</span> Th (<span id="res-kategori">-</span>)</div>
+                    <div><strong>Alamat:</strong> <span id="res-alamat">-</span></div>
+                </div>
+
+                <div class="flex justify-center items-center space-x-6">
+                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-200 min-w-[130px]">
+                        <span class="block text-xs text-gray-500 font-bold uppercase">Skor Total</span>
+                        <span id="quiz-score-display" class="font-fredoka text-4xl font-extrabold text-brandBlue">0</span>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 min-w-[130px]">
+                        <span class="block text-xs text-gray-500 font-bold uppercase">Penghargaan</span>
+                        <div id="star-award-display" class="flex justify-center text-amber-400 text-2xl mt-1 space-x-1">
+                            <!-- Injected stars -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quiz-message" class="p-4 rounded-2xl bg-emerald-100 text-emerald-900 font-fredoka font-bold text-base sm:text-lg max-w-md mx-auto">
+                    "Hebat! Kamu sudah menjadi ahli kesehatan otak dan stroke!"
+                </div>
+
+                <p class="text-xs text-gray-400 font-bold">Data skor Anda telah terhubung dan dikirim keSpreadsheet Rekapitulasi Pembelajaran.</p>
+
+                <div class="pt-2 flex justify-center space-x-4">
+                    <button onclick="playAudioTap(); resetQuiz()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-fredoka font-bold px-6 py-3 rounded-2xl transition">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> Coba Ulang
+                    </button>
+                    <button onclick="playAudioTap(); navigateTo('page-1')" class="bg-brandBlue hover:bg-sky-600 text-white font-fredoka font-bold px-6 py-3 rounded-2xl transition shadow">
+                        Kembali Beranda 🏠
                     </button>
                 </div>
             </div>
@@ -483,489 +918,453 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-100 bg-white/50">
-        NeuroLab Smart &copy; 2026 — Media Edukasi Remaja, Dewasa, & Lansia Indonesia.
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 py-6 mt-12 text-center text-xs text-gray-500 font-semibold">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl">🧠</span>
+                <span class="font-fredoka font-bold text-brandDark text-sm">BAKTI SmartDoll — NeuroLab</span>
+            </div>
+            <p>© 2026 Media Pembelajaran Interaktif Kesehatan Otak & Stroke. Hak Cipta Dilindungi.</p>
+        </div>
     </footer>
 
-    <!-- Custom Modal for Notifications / Messages (No alert() used) -->
-    <div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center animate-fade-in border border-indigo-100">
-            <div id="modal-icon" class="w-12 h-12 mx-auto rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-3">
-                <i class="fa-solid fa-info"></i>
-            </div>
-            <h4 id="modal-title" class="font-display font-bold text-base text-slate-900 mb-1">Pemberitahuan</h4>
-            <p id="modal-message" class="text-xs text-slate-600 mb-5 leading-relaxed">Pesan modal...</p>
-            <button onclick="closeModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl transition">
-                Mengerti
-            </button>
-        </div>
-    </div>
-
-    <!-- JavaScript Application Logic -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Global User State
-        let currentUser = {
-            name: "",
-            age: "",
-            address: "",
-            score: 0
+        /* ================= 1. SOUND EFFECT & BGM LOGIC ================= */
+        const bgmAudio = document.getElementById('bgm-audio');
+        let isBgmPlaying = false;
+
+        // Sound Effect Synthetic Tap using Web Audio API
+        function playAudioTap() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch(e) {
+                console.log("Audio touch active");
+            }
+        }
+
+        function toggleBGM() {
+            playAudioTap();
+            const icon = document.getElementById('bgm-icon');
+            if (isBgmPlaying) {
+                bgmAudio.pause();
+                isBgmPlaying = false;
+                icon.className = 'fa-solid fa-volume-xmark';
+            } else {
+                bgmAudio.play().then(() => {
+                    isBgmPlaying = true;
+                    icon.className = 'fa-solid fa-volume-high';
+                }).catch(err => {
+                    console.log("Autoplay blocked:", err);
+                });
+            }
+        }
+
+        /* ================= 2. USER PROFILE & NAVIGATION ================= */
+        let userProfile = {
+            nama: '',
+            usia: '',
+            kategori: 'Remaja',
+            alamat: ''
         };
 
-        // Audio State (Web Audio API Synthesizer for gentle cheerful bg music)
-        let audioCtx = null;
-        let isAudioPlaying = false;
-        let audioInterval = null;
+        let currentStars = 0;
 
-        function toggleAudio() {
-            const btnText = document.getElementById('audio-status-text');
-            if (!isAudioPlaying) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    playCheerfulMelody();
-                    audioInterval = setInterval(playCheerfulMelody, 8000);
-                    isAudioPlaying = true;
-                    btnText.innerText = "Musik Latar: On 🎵";
-                    showModal("Musik Aktif", "Musik latar lembut & ceria diaktifkan.", "success");
-                } catch(e) {
-                    showModal("Info", "Browser membatasi audio otomatis.", "info");
-                }
-            } else {
-                if (audioInterval) clearInterval(audioInterval);
-                if (audioCtx) audioCtx.close();
-                isAudioPlaying = false;
-                btnText.innerText = "Musik Latar: Off";
-                showModal("Musik Nonaktif", "Musik latar dimatikan.", "info");
-            }
+        function addStars(num) {
+            currentStars += num;
+            document.getElementById('star-count').innerText = currentStars;
         }
 
-        function playCheerfulMelody() {
-            if (!audioCtx || !isAudioPlaying) return;
-            const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63]; // C chord tones
-            notes.forEach((freq, index) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.03, audioCtx.currentTime + index * 0.3);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + index * 0.3 + 0.25);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(audioCtx.currentTime + index * 0.3);
-                osc.stop(audioCtx.currentTime + index * 0.3 + 0.25);
-            });
-        }
-
-        // Custom Modal
-        function showModal(title, message, type = "info") {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
-            const iconEl = document.getElementById('modal-icon');
-            if (type === "success") {
-                iconEl.className = "w-12 h-12 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl mb-3";
-                iconEl.innerHTML = '<i class="fa-solid fa-check"></i>';
-            } else {
-                iconEl.className = "w-12 h-12 mx-auto rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-3";
-                iconEl.innerHTML = '<i class="fa-solid fa-info"></i>';
-            }
-            document.getElementById('custom-modal').classList.remove('hidden');
-            document.getElementById('custom-modal').classList.add('flex');
-        }
-
-        function closeModal() {
-            document.getElementById('custom-modal').classList.remove('flex');
-            document.getElementById('custom-modal').classList.add('hidden');
-        }
-
-        // Navigation
-        function switchPage(pageId) {
-            const pages = ['page-login', 'page-home', 'page-materi', 'page-simulasi', 'page-game', 'page-kuis'];
-            pages.forEach(p => {
-                const el = document.getElementById(p);
-                if (el) el.classList.add('hidden');
-            });
-
-            const target = document.getElementById('page-' + pageId);
-            if (target) {
-                target.classList.remove('hidden');
-                target.classList.add('animate-fade-in');
-            }
-
-            if (pageId !== 'login') {
-                document.getElementById('main-header').classList.remove('hidden');
-                document.getElementById('main-header').classList.add('flex');
-            } else {
-                document.getElementById('main-header').classList.remove('flex');
-                document.getElementById('main-header').classList.add('hidden');
-            }
-
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            if (pageId === 'kuis' && currentQuizIndex === 0 && !quizStarted) {
-                initQuiz();
-            }
-        }
-
-        function confirmExit() {
-            showModal("Keluar Sesi", "Terima kasih telah belajar bersama NeuroLab Smart! Data skor sementara aman.", "success");
-            setTimeout(() => {
-                closeModal();
-                switchPage('login');
-            }, 1500);
-        }
-
-        // Handle Login
-        function handleLogin(e) {
-            e.preventDefault();
+        function startAppWithProfile() {
+            playAudioTap();
             const nama = document.getElementById('input-nama').value.trim();
             const usia = document.getElementById('input-usia').value.trim();
+            const kategori = document.getElementById('input-kategori').value;
             const alamat = document.getElementById('input-alamat').value.trim();
 
-            if (!nama || !usia || !alamat) return;
+            if (!nama) {
+                alert("Silakan isi nama Anda terlebih dahulu ya! 😊");
+                return;
+            }
 
-            currentUser.name = nama;
-            currentUser.age = usia;
-            currentUser.address = alamat;
+            userProfile = { nama, usia: usia || '12', kategori, alamat: alamat || '-' };
 
-            document.getElementById('welcome-name').innerText = nama;
-            document.getElementById('user-info-badge').innerText = `${nama} (${usia} thn, ${alamat})`;
+            // Update Header Display
+            document.getElementById('badge-user-name').innerText = userProfile.nama;
+            document.getElementById('user-display-badge').classList.remove('hidden');
 
-            switchPage('home');
+            // Autoplay BGM on first user interaction
+            if (!isBgmPlaying) {
+                toggleBGM();
+            }
+
+            navigateTo('page-2');
         }
 
-        // --- SIMULASI LAB DATA ---
-        const patientCases = [
-            {
-                id: "Kasus 01",
-                name: "Pak Budi, 52 Tahun",
-                habits: ["Jarang olahraga", "Sering makan makanan berlemak", "Sering haus dan mudah lelah", "Tekanan darah sering tinggi"],
-                lab: [
-                    { test: "Glukosa Darah", val: "145 mg/dL", interp: "⚠️ Perlu Perhatian" },
-                    { test: "HbA1c", val: "7.2%", interp: "⚠️ Tinggi" },
-                    { test: "Kolesterol Total", val: "235 mg/dL", interp: "⚠️ Tinggi" },
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-view').forEach(page => {
+                page.classList.add('hidden');
+            });
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function toggleMobileMenu() {
+            playAudioTap();
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        /* ================= 3. HALAMAN 2: APERSEPSI ================= */
+        function checkApersepsi(btn, isCorrect, feedbackMsg) {
+            playAudioTap();
+            const parent = btn.closest('.space-y-4');
+            const buttons = parent.querySelectorAll('.apersepsi-opt');
+            const feedbackBox = parent.querySelector('.feedback-box');
+
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('border-brandBlue', 'bg-blue-50');
+            });
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-100', 'border-emerald-400', 'text-emerald-900');
+                feedbackBox.className = "feedback-box p-4 rounded-2xl font-bold text-sm bg-emerald-100 text-emerald-900 border border-emerald-300";
+                addStars(5);
+            } else {
+                btn.classList.add('bg-rose-100', 'border-rose-400', 'text-rose-900');
+                feedbackBox.className = "feedback-box p-4 rounded-2xl font-bold text-sm bg-rose-100 text-rose-900 border border-rose-300";
+            }
+
+            feedbackBox.innerText = feedbackMsg;
+            feedbackBox.classList.remove('hidden');
+        }
+
+        /* ================= 4. HALAMAN 4: SIMULASI LAB DETEKTIF ================= */
+        const patientData = {
+            1: {
+                name: "Pak Budi (52 Tahun)",
+                rows: [
+                    { test: "Glukosa darah", val: "145 mg/dL", interp: "⚠️ Perlu diperhatikan" },
+                    { test: "HbA1c", val: "7,2%", interp: "⚠️ Tinggi" },
+                    { test: "Kolesterol total", val: "235 mg/dL", interp: "⚠️ Tinggi" },
                     { test: "LDL", val: "160 mg/dL", interp: "⚠️ Tinggi" },
                     { test: "HDL", val: "38 mg/dL", interp: "⚠️ Rendah" },
-                    { test: "Trigliserida", val: "180 mg/dL", interp: "⚠️ Perlu Perhatian" }
-                ],
-                connection: "HbA1c dan gula darah tinggi dalam jangka panjang dapat merusak dinding pembuluh darah kecil dan besar di seluruh tubuh, termasuk otak. Ditambah LDL tinggi yang memicu plak aterosklerosis (penyempitan pembuluh darah), risiko terjadinya stroke iskemik meningkat secara signifikan!"
+                    { test: "Trigliserida", val: "180 mg/dL", interp: "⚠️ Perlu diperhatikan" }
+                ]
             },
-            {
-                id: "Kasus 02",
-                name: "Ibu Siti, 60 Tahun",
-                habits: ["Suka makanan manis & bersantan", "Kurang aktivitas fisik", "Riwayat hipertensi tidak rutin kontrol", "Sering pusing & tengkuk kaku"],
-                lab: [
-                    { test: "Glukosa Darah", val: "160 mg/dL", interp: "⚠️ Tinggi" },
-                    { test: "HbA1c", val: "7.8%", interp: "⚠️ Tinggi" },
-                    { test: "Kolesterol Total", val: "250 mg/dL", interp: "⚠️ Tinggi" },
-                    { test: "LDL", val: "175 mg/dL", interp: "⚠️ Tinggi" },
+            2: {
+                name: "Ibu Maya (45 Tahun)",
+                rows: [
+                    { test: "Glukosa darah", val: "165 mg/dL", interp: "⚠️ Perlu diperhatikan" },
+                    { test: "HbA1c", val: "7,8%", interp: "⚠️ Tinggi" },
+                    { test: "Kolesterol total", val: "210 mg/dL", interp: "⚠️ Perlu diperhatikan" },
+                    { test: "LDL", val: "140 mg/dL", interp: "⚠️ Perlu diperhatikan" },
+                    { test: "HDL", val: "42 mg/dL", interp: "⚠️ Perlu ditingkatkan" },
+                    { test: "Trigliserida", val: "160 mg/dL", interp: "⚠️ Perlu diperhatikan" }
+                ]
+            },
+            3: {
+                name: "Pak Joko (65 Tahun)",
+                rows: [
+                    { test: "Glukosa darah", val: "130 mg/dL", interp: "⚠️ Perlu diperhatikan" },
+                    { test: "HbA1c", val: "6,8%", interp: "⚠️ Perlu diperhatikan" },
+                    { test: "Kolesterol total", val: "260 mg/dL", interp: "⚠️ Tinggi" },
+                    { test: "LDL", val: "180 mg/dL", interp: "⚠️ Tinggi" },
                     { test: "HDL", val: "35 mg/dL", interp: "⚠️ Rendah" },
                     { test: "Trigliserida", val: "210 mg/dL", interp: "⚠️ Tinggi" }
-                ],
-                connection: "Tekanan darah yang tinggi dan tidak terkontrol memberikan tekanan berlebih pada pembuluh darah otak. Jika diperparah oleh penumpukan kolesterol LDL, pembuluh darah bisa mengalami sumbatan atau pecah (stroke hemoragik)."
-            },
-            {
-                id: "Kasus 03",
-                name: "Rian, 28 Tahun (Remaja/Dewasa Muda)",
-                habits: ["Sering begadang", "Merokok aktif", "Jarang makan sayur & buah", "Jemputan kerja naik motor terus"],
-                lab: [
-                    { test: "Glukosa Darah", val: "102 mg/dL", interp: "Normal" },
-                    { test: "HbA1c", val: "5.6%", interp: "Normal" },
-                    { test: "Kolesterol Total", val: "210 mg/dL", interp: "⚠️ Perlu Perhatian" },
-                    { test: "LDL", val: "140 mg/dL", interp: "⚠️ Perlu Perhatian" },
-                    { test: "HDL", val: "42 mg/dL", interp: "Normal" },
-                    { test: "Trigliserida", val: "160 mg/dL", interp: "⚠️ Perlu Perhatian" }
-                ],
-                connection: "Meskipun masih muda, kebiasaan merokok dan kadar LDL yang mulai meningkat dapat menjadi awal mula kerusakan endotel (dinding pembuluh darah). Pencegahan sejak dini sangat penting agar pembuluh darah otak tetap elastis!"
+                ]
             }
-        ];
+        };
 
-        let currentPatientIndex = 0;
+        let selectedPatientId = 1;
 
-        function loadRandomPatient() {
-            currentPatientIndex = (currentPatientIndex + 1) % patientCases.length;
-            const p = patientCases[currentPatientIndex];
-            
-            document.getElementById('card-id').innerText = p.id;
-            document.getElementById('patient-name').innerText = p.name;
-            document.getElementById('p-habit1').innerText = p.habits[0];
-            document.getElementById('p-habit2').innerText = p.habits[1];
-            document.getElementById('p-habit3').innerText = p.habits[2];
-            document.getElementById('p-habit4').innerText = p.habits[3];
-
-            // Reset lab view
-            document.getElementById('lab-idle-msg').classList.remove('hidden');
-            document.getElementById('lab-loading').classList.add('hidden');
-            document.getElementById('lab-results').classList.add('hidden');
-            document.getElementById('brain-connection-box').classList.add('hidden');
+        function selectPatient(id) {
+            playAudioTap();
+            selectedPatientId = id;
+            for (let i = 1; i <= 3; i++) {
+                const card = document.getElementById(`patient-card-${i}`);
+                if (i === id) {
+                    card.className = "patient-card border-4 border-brandBlue bg-blue-50/50 p-5 rounded-2xl cursor-pointer hover:shadow-md transition relative";
+                } else {
+                    card.className = "patient-card border-2 border-gray-200 p-5 rounded-2xl cursor-pointer hover:shadow-md transition relative opacity-60";
+                }
+            }
         }
 
-        function runLabSimulation() {
-            document.getElementById('lab-idle-msg').classList.add('hidden');
-            document.getElementById('lab-results').classList.add('hidden');
-            document.getElementById('brain-connection-box').classList.add('hidden');
-            document.getElementById('lab-loading').classList.remove('hidden');
+        function answerLabReq(btn, isCorrect) {
+            playAudioTap();
+            const feedback = document.getElementById('lab-req-feedback');
+            feedback.innerText = "🎉 Tepat Sekali! hbA1c, glukosa darah, dan profil lipid semuanya penting untuk mengevaluasi faktor risiko pembuluh darah!";
+            feedback.classList.remove('hidden');
+            addStars(5);
+        }
 
-            let progress = 0;
-            const progressBar = document.getElementById('progress-bar');
-            const progressText = document.getElementById('progress-text');
+        function startLabSimulation() {
+            playAudioTap();
+            const btn = document.getElementById('run-lab-btn');
+            const progressContainer = document.getElementById('lab-progress-container');
+            const progressBar = document.getElementById('lab-progress-bar');
+            const percentText = document.getElementById('lab-percent');
+            const statusText = document.getElementById('lab-status-text');
+            const resultSection = document.getElementById('lab-result-section');
 
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            progressContainer.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+
+            let width = 0;
             const interval = setInterval(() => {
-                progress += 20;
-                progressBar.style.width = progress + '%';
-                progressText.innerText = progress + '%';
+                width += 10;
+                progressBar.style.width = width + '%';
+                percentText.innerText = width + '%';
 
-                if (progress >= 100) {
+                if (width === 30) statusText.innerText = '🔬 Menghitung Glukosa & HbA1c...';
+                if (width === 70) statusText.innerText = '📊 Menganalisis Profil Lipid & Kolesterol...';
+
+                if (width >= 100) {
                     clearInterval(interval);
+                    statusText.innerText = '✅ Pengujian Selesai!';
                     setTimeout(() => {
-                        document.getElementById('lab-loading').classList.add('hidden');
-                        displayLabResults();
+                        showLabResults();
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50');
                     }, 400);
                 }
-            }, 250);
+            }, 120);
         }
 
-        function displayLabResults() {
-            const p = patientCases[currentPatientIndex];
-            const tbody = document.getElementById('lab-table-body');
-            tbody.innerHTML = "";
+        function showLabResults() {
+            const data = patientData[selectedPatientId];
+            document.getElementById('patient-name-display').innerText = `Lembar Hasil Simulasi: ${data.name}`;
 
-            p.lab.forEach(item => {
+            const tbody = document.getElementById('lab-table-body');
+            tbody.innerHTML = '';
+
+            data.rows.forEach(r => {
                 const tr = document.createElement('tr');
-                const badgeColor = item.interp.includes('Tinggi') ? 'bg-rose-100 text-rose-800' : (item.interp.includes('Perhatian') ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800');
+                tr.className = "hover:bg-gray-50";
                 tr.innerHTML = `
-                    <td class="p-2.5 font-medium text-slate-800">${item.test}</td>
-                    <td class="p-2.5 font-bold text-indigo-900">${item.val}</td>
-                    <td class="p-2.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${badgeColor}">${item.interp}</span></td>
+                    <td class="p-3 font-bold">${r.test}</td>
+                    <td class="p-3 text-rose-600 font-extrabold">${r.val}</td>
+                    <td class="p-3"><span class="bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg text-xs font-bold">${r.interp}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            document.getElementById('brain-connection-text').innerText = p.connection;
-            document.getElementById('lab-results').classList.remove('hidden');
-            document.getElementById('brain-connection-box').classList.remove('hidden');
+            document.getElementById('lab-result-section').classList.remove('hidden');
+            addStars(10);
+            window.scrollTo({ top: document.getElementById('lab-result-section').offsetTop - 80, behavior: 'smooth' });
         }
 
-        function startMiniDetectiveGame() {
-            switchPage('game');
-            initGame();
-        }
-
-        // --- MINI GAME DETEKTIF OTAK ---
-        let gameStep = 0;
-        let gameScore = 0;
-
-        const gameQuestions = [
-            {
-                title: "Apa yang menjadi perhatian utama dari hasil pemeriksaan pasien dengan kadar HbA1c dan LDL tinggi?",
-                options: [
-                    { text: "HbA1c tinggi (gula darah belum terkontrol)", correct: false },
-                    { text: "LDL tinggi (kolesterol jahat meningkat)", correct: false },
-                    { text: "HDL rendah (kolesterol baik kurang)", correct: false },
-                    { text: "Semua benar dan saling berkaitan dalam risiko pembuluh darah", correct: true }
-                ],
-                explanation: "Hebat! Semua faktor tersebut (HbA1c, LDL, HDL) sangat penting diperhatikan karena saling berkontribusi terhadap kesehatan pembuluh darah otak."
-            },
-            {
-                title: "Bagaimana kaitan antara LDL tinggi dengan risiko stroke iskemik?",
-                options: [
-                    { text: "LDL tinggi memicu pembentukan plak (aterosklerosis) yang menyumbat aliran darah otak", correct: true },
-                    { text: "LDL tinggi membuat rambut cepat beruban", correct: false },
-                    { text: "LDL tinggi memperkuat otot jantung saja", correct: false },
-                    { text: "LDL tinggi tidak ada hubungannya dengan otak", correct: false }
-                ],
-                explanation: "Tepat sekali! Penumpukan LDL membentuk plak pada pembuluh darah, menyempitkan aliran, dan memicu stroke iskemik."
-            },
-            {
-                title: "Tindakan preventif terbaik untuk menjaga kesehatan otak dan mencegah stroke adalah...",
-                options: [
-                    { text: "Aktif bergerak, makan bergizi seimbang, dan rutin cek kesehatan", correct: true },
-                    { text: "Tidur seharian tanpa aktivitas", correct: false },
-                    { text: "Mengonsumsi makanan tinggi garam dan lemak jenuh", correct: false },
-                    { text: "Mengabaikan tekanan darah tinggi", correct: false }
-                ],
-                explanation: "Benar! Gaya hidup aktif, gizi seimbang, dan pemantauan kesehatan berkala adalah kunci utama mencegah stroke."
-            }
-        ];
-
-        function initGame() {
-            gameStep = 0;
-            gameScore = 0;
-            document.getElementById('game-score').innerText = gameScore;
-            loadGameQuestion();
-        }
-
-        function loadGameQuestion() {
-            const q = gameQuestions[gameStep];
-            document.getElementById('game-level-badge').innerText = `Tantangan ${gameStep + 1} dari 3`;
-            document.getElementById('game-question-title').innerText = q.title;
-            document.getElementById('game-feedback').classList.add('hidden');
-            document.getElementById('game-question-area').classList.remove('hidden');
-
-            const container = document.getElementById('game-options');
-            container.innerHTML = "";
-
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = "w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-300 font-medium text-xs sm:text-sm text-slate-700 transition flex items-center justify-between";
-                btn.innerHTML = `<span>${opt.text}</span> <i class="fa-solid fa-chevron-right text-slate-300"></i>`;
-                btn.onclick = () => checkGameAnswer(opt.correct, q.explanation);
-                container.appendChild(btn);
-            });
-        }
-
-        function checkGameAnswer(isCorrect, explanation) {
-            document.getElementById('game-question-area').classList.add('hidden');
-            const feedbackBox = document.getElementById('game-feedback');
-            const titleEl = document.getElementById('feedback-title');
-            const descEl = document.getElementById('feedback-desc');
-
+        function answerDetectiveMission(btn, isCorrect) {
+            playAudioTap();
+            const feedbackContainer = document.getElementById('detective-feedback-level2');
             if (isCorrect) {
-                gameScore += 35;
-                document.getElementById('game-score').innerText = gameScore;
-                titleEl.innerHTML = "🎉 BENAR SEKALI!";
-                titleEl.className = "font-display font-bold text-lg mb-1 text-emerald-600";
-            } else {
-                titleEl.innerHTML = "💡 TETap SEMANGAT!";
-                titleEl.className = "font-display font-bold text-lg mb-1 text-amber-600";
-            }
-            descEl.innerText = explanation;
-            feedbackBox.classList.remove('hidden');
-        }
-
-        function nextGameStep() {
-            gameStep++;
-            if (gameStep < gameQuestions.length) {
-                loadGameQuestion();
-            } else {
-                showModal("Game Selesai!", `Luar biasa! Kamu menyelesaikan Tantangan Detektif Otak dengan total poin ${gameScore}.`, "success");
-                setTimeout(() => {
-                    closeModal();
-                    switchPage('kuis');
-                }, 1500);
+                feedbackContainer.classList.remove('hidden');
+                addStars(10);
             }
         }
 
-        // --- 20 SOAL KUIS EVALUASI ---
-        let currentQuizIndex = 0;
-        let quizScore = 0;
-        let quizStarted = false;
-        let selectedOptionIndex = null;
+        /* ================= 5. HALAMAN 5: MINI GAMES LOGIC ================= */
+        let selectedMatch = null;
 
-        const quizQuestions20 = [
-            { q: "Apa fungsi utama otak bagi tubuh?", opts: ["Menghasilkan insulin", "Mengatur berbagai fungsi tubuh dan aktivitas berpikir", "Menyaring darah", "Menghancurkan lemak"], ans: 1 },
-            { q: "Stroke terjadi ketika...", opts: ["Aliran darah ke otak terganggu atau terjadi perdarahan di otak", "Lambung menghasilkan terlalu banyak asam", "Paru-paru kekurangan udara", "Tulang kehilangan kalsium"], ans: 0 },
-            { q: "Salah satu faktor risiko stroke yang dapat dikendalikan adalah...", opts: ["Usia", "Riwayat keluarga", "Tekanan darah tinggi", "Jenis kelamin"], ans: 2 },
-            { q: "Tekanan darah tinggi dapat meningkatkan risiko stroke karena...", opts: ["Dapat merusak pembuluh darah", "Membuat tulang lebih kuat", "Meningkatkan tinggi badan", "Mengurangi kebutuhan tidur"], ans: 0 },
-            { q: "Pemeriksaan HbA1c memberikan gambaran tentang...", opts: ["Kondisi gula darah dalam beberapa bulan terakhir", "Kadar oksigen paru-paru", "Jumlah tulang dalam tubuh", "Kekuatan otot"], ans: 0 },
-            { q: "Kadar gula darah yang tidak terkontrol dalam jangka panjang perlu diperhatikan karena dapat berdampak pada...", opts: ["Pembuluh darah", "Warna mata saja", "Pertumbuhan rambut", "Bentuk telinga"], ans: 0 },
-            { q: "Pemeriksaan profil lipid digunakan untuk mengetahui...", opts: ["Kondisi lemak dalam darah", "Jumlah sel darah putih saja", "Kadar oksigen", "Fungsi pendengaran"], ans: 0 },
-            { q: "Yang termasuk bagian dari profil lipid adalah...", opts: ["LDL, HDL, dan trigliserida", "HbA1c dan hemoglobin", "Leukosit dan trombosit", "Ureum dan kreatinin"], ans: 0 },
-            { q: "LDL sering disebut sebagai salah satu jenis kolesterol yang perlu diperhatikan karena kadar yang tinggi dapat berhubungan dengan...", opts: ["Pembentukan plak pada pembuluh darah", "Peningkatan tinggi badan", "Peningkatan massa otot", "Penurunan suhu tubuh"], ans: 0 },
-            { q: "HDL dikenal sebagai...", opts: ["Salah satu jenis kolesterol yang membantu membawa kolesterol kembali ke hati", "Jenis gula darah", "Jenis sel darah merah", "Hormon pertumbuhan"], ans: 0 },
-            { q: "Perhatikan hasil simulasi:\nHbA1c: 7,3%\nLDL: 160 mg/dL\nApa yang sebaiknya dilakukan?", opts: ["Mengabaikan hasil", "Menjadikan hasil sebagai bahan evaluasi dan berkonsultasi dengan tenaga kesehatan", "Menghentikan semua aktivitas", "Mengonsumsi obat sendiri"], ans: 1 },
-            { q: "Jika hasil simulasi menunjukkan kadar LDL tinggi, edukasi yang tepat adalah...", opts: ["Menjaga pola makan dan aktivitas fisik serta mengikuti anjuran tenaga kesehatan", "Tidak perlu berolahraga", "Menghindari semua makanan", "Tidak perlu melakukan pemeriksaan lagi"], ans: 0 },
-            { q: "Mengapa pemeriksaan laboratorium dapat digunakan dalam edukasi pencegahan stroke?", opts: ["Membantu mengenali beberapa faktor risiko yang perlu diperhatikan", "Memastikan seseorang pasti terkena stroke", "Menggantikan pemeriksaan dokter", "Menentukan kepribadian seseorang"], ans: 0 },
-            { q: "Jika hasil pemeriksaan menunjukkan faktor risiko yang perlu diperhatikan, tindakan yang tepat adalah...", opts: ["Panik", "Mendiagnosis diri sendiri", "Berkonsultasi dengan tenaga kesehatan", "Mengabaikannya"], ans: 2 },
-            { q: "Seseorang tiba-tiba mengalami wajah mencong dan salah satu tangan terasa lemah. Kondisi tersebut perlu dicurigai sebagai...", opts: ["Stroke", "Flu", "Maag", "Alergi"], ans: 0 },
-            { q: "Dalam konsep FAST, huruf F (Face) berkaitan dengan...", opts: ["Wajah mencong atau tidak simetris", "Demam", "Kelelahan", "Nafsu makan"], ans: 0 },
-            { q: "Dalam konsep FAST, huruf S (Speech) berkaitan dengan...", opts: ["Gangguan bicara", "Gangguan tidur", "Gangguan penglihatan warna", "Gangguan pencernaan"], ans: 0 },
-            { q: "Jika seseorang tiba-tiba menunjukkan tanda-tanda stroke, tindakan yang tepat adalah...", opts: ["Menunggu hingga gejala hilang", "Segera mencari pertolongan medis", "Membiarkan pasien tidur", "Memberikan makanan sebanyak-banyaknya"], ans: 1 },
-            { q: "Kebiasaan yang dapat membantu menjaga kesehatan otak dan pembuluh darah adalah...", opts: ["Aktif bergerak, makan bergizi seimbang, dan tidak merokok", "Sering begadang", "Jarang bergerak", "Mengonsumsi makanan tinggi garam secara berlebihan"], ans: 0 },
-            { q: "Kesimpulan utama dari NeuroLab Smart adalah...", opts: ["Pemeriksaan laboratorium dapat membantu kita memahami beberapa faktor risiko dan pentingnya menjaga kesehatan otak", "Semua orang dengan hasil lab tertentu pasti terkena stroke", "Pemeriksaan laboratorium tidak diperlukan", "Stroke hanya terjadi pada orang lanjut usia"], ans: 0 }
+        function selectMatchItem(type, el) {
+            playAudioTap();
+            document.querySelectorAll('.match-source-btn').forEach(b => b.classList.remove('ring-4', 'ring-brandBlue'));
+            selectedMatch = type;
+            el.classList.add('ring-4', 'ring-brandBlue');
+        }
+
+        function applyMatchTarget(targetType, el) {
+            playAudioTap();
+            if (!selectedMatch) {
+                alert("Silakan pilih salah satu istilah medis di sebelah kiri terlebih dahulu!");
+                return;
+            }
+
+            const slot = el.querySelector('.matched-slot');
+            if (selectedMatch === targetType) {
+                slot.innerText = `✅ Tepat: ${selectedMatch}`;
+                el.classList.add('bg-emerald-50', 'border-emerald-400');
+                addStars(5);
+            } else {
+                slot.innerText = `❌ Salah pasang (${selectedMatch})`;
+                el.classList.add('bg-rose-50', 'border-rose-400');
+            }
+            selectedMatch = null;
+            document.querySelectorAll('.match-source-btn').forEach(b => b.classList.remove('ring-4', 'ring-brandBlue'));
+        }
+
+        function movePuzzleStep(btn, direction) {
+            playAudioTap();
+            const card = btn.closest('.puzzle-step');
+            const container = document.getElementById('step-puzzle-container');
+            if (direction === -1 && card.previousElementSibling) {
+                container.insertBefore(card, card.previousElementSibling);
+            } else if (direction === 1 && card.nextElementSibling) {
+                container.insertBefore(card.nextElementSibling, card);
+            }
+        }
+
+        function checkPuzzleOrder() {
+            playAudioTap();
+            const steps = document.querySelectorAll('.puzzle-step');
+            let currentOrder = [];
+            steps.forEach(s => currentOrder.push(s.getAttribute('data-step-id')));
+
+            const feedback = document.getElementById('puzzle-feedback');
+            if (currentOrder.join(',') === "1,2,3,4") {
+                feedback.className = "p-4 rounded-2xl font-bold text-sm bg-emerald-100 text-emerald-900 border border-emerald-300";
+                feedback.innerText = "🎉 Luar Biasa! Urutan tindakan pertolongan pertama stroke kamu sudah 100% Benar!";
+                addStars(10);
+            } else {
+                feedback.className = "p-4 rounded-2xl font-bold text-sm bg-rose-100 text-rose-900 border border-rose-300";
+                feedback.innerText = "Coba lagi! Ingat: Kenali Gejala ➔ Catat Onset ➔ Transportasi & Triase RS ➔ Diagnosis Medis Cepat.";
+            }
+            feedback.classList.remove('hidden');
+        }
+
+        /* ================= 6. HALAMAN 6: EVALUASI (20 SOAL) ================= */
+        const quizData = [
+            { q: "1. Apa fungsi utama otak bagi tubuh?", a: ["Menghasilkan insulin", "Mengatur berbagai fungsi tubuh dan aktivitas berpikir", "Menyaring darah", "Menghancurkan lemak"], correct: 1 },
+            { q: "2. Stroke terjadi ketika...", a: ["Aliran darah ke otak terganggu atau terjadi perdarahan di otak", "Lambung menghasilkan terlalu banyak asam", "Paru-paru kekurangan udara", "Tulang kehilangan kalsium"], correct: 0 },
+            { q: "3. Salah satu faktor risiko stroke yang dapat dikendalikan adalah...", a: ["Usia", "Riwayat keluarga", "Tekanan darah tinggi", "Jenis kelamin"], correct: 2 },
+            { q: "4. Tekanan darah tinggi dapat meningkatkan risiko stroke karena...", a: ["Dapat merusak pembuluh darah", "Membuat tulang lebih kuat", "Meningkatkan tinggi badan", "Mengurangi kebutuhan tidur"], correct: 0 },
+            { q: "5. Pemeriksaan HbA1c memberikan gambaran tentang...", a: ["Kondisi gula darah dalam beberapa bulan terakhir", "Kadar oksigen paru-paru", "Jumlah tulang dalam tubuh", "Kekuatan otot"], correct: 0 },
+            { q: "6. Kadar gula darah yang tidak terkontrol dalam jangka panjang perlu diperhatikan karena dapat berdampak pada...", a: ["Pembuluh darah", "Warna mata saja", "Pertumbuhan rambut", "Bentuk telinga"], correct: 0 },
+            { q: "7. Pemeriksaan profil lipid digunakan untuk mengetahui...", a: ["Kondisi lemak dalam darah", "Jumlah sel darah putih saja", "Kadar oksigen", "Fungsi pendengaran"], correct: 0 },
+            { q: "8. Yang termasuk bagian dari profil lipid adalah...", a: ["LDL, HDL, dan trigliserida", "HbA1c dan hemoglobin", "Leukosit dan trombosit", "Ureum dan kreatinin"], correct: 0 },
+            { q: "9. LDL sering disebut sebagai salah satu jenis kolesterol yang perlu diperhatikan karena kadar yang tinggi dapat berhubungan dengan...", a: ["Pembentukan plak pada pembuluh darah", "Peningkatan tinggi badan", "Peningkatan massa otot", "Penurunan suhu tubuh"], correct: 0 },
+            { q: "10. HDL dikenal sebagai...", a: ["Salah satu jenis kolesterol yang membantu membawa kolesterol kembali ke hati", "Jenis gula darah", "Jenis sel darah merah", "Hormon pertumbuhan"], correct: 0 },
+            { q: "11. Perhatikan hasil simulasi berikut:\nHbA1c: 7,3%\nLDL: 160 mg/dL\nHDL: 38 mg/dL\nApa yang sebaiknya dilakukan?", a: ["Mengabaikan hasil", "Menjadikan hasil sebagai bahan evaluasi dan berkonsultasi dengan tenaga kesehatan", "Menghentikan semua aktivitas", "Mengonsumsi obat sendiri"], correct: 1 },
+            { q: "12. Jika hasil simulasi menunjukkan kadar LDL tinggi, edukasi yang tepat adalah...", a: ["Menjaga pola makan dan aktivitas fisik serta mengikuti anjuran tenaga kesehatan", "Tidak perlu berolahraga", "Menghindari semua makanan", "Tidak perlu melakukan pemeriksaan lagi"], correct: 0 },
+            { q: "13. Mengapa pemeriksaan laboratorium dapat digunakan dalam edukasi pencegahan stroke?", a: ["Membantu mengenali beberapa faktor risiko yang perlu diperhatikan", "Memastikan seseorang pasti terkena stroke", "Menggantikan pemeriksaan dokter", "Menentukan kepribadian seseorang"], correct: 0 },
+            { q: "14. Jika hasil pemeriksaan menunjukkan faktor risiko yang perlu diperhatikan, tindakan yang tepat adalah...", a: ["Panik", "Mendiagnosis diri sendiri", "Berkonsultasi dengan tenaga kesehatan", "Mengabaikannya"], correct: 2 },
+            { q: "15. Seseorang tiba-tiba mengalami wajah mencong dan salah satu tangan terasa lemah. Kondisi tersebut perlu dicurigai sebagai...", a: ["Stroke", "Flu", "Maag", "Alergi"], correct: 0 },
+            { q: "16. Dalam konsep FAST / SeGeRa Ke RS, pemeriksaan wajah (Face / Senyum) berkaitan dengan...", a: ["Wajah mencong atau tidak simetris", "Demam", "Kelelahan", "Nafsu makan"], correct: 0 },
+            { q: "17. Dalam konsep FAST / SeGeRa Ke RS, gangguan bicara (Speech / Rawatan) berkaitan dengan...", a: ["Gangguan bicara pelo atau tidak jelas", "Gangguan tidur", "Gangguan penglihatan warna", "Gangguan pencernaan"], correct: 0 },
+            { q: "18. Jika seseorang tiba-tiba menunjukkan tanda-tanda stroke, tindakan yang tepat adalah...", a: ["Menunggu hingga gejala hilang", "Segera mencari pertolongan medis", "Membiarkan pasien tidur", "Memberikan makanan sebanyak-banyaknya"], correct: 1 },
+            { q: "19. Kebiasaan yang dapat membantu menjaga kesehatan otak dan pembuluh darah adalah...", a: ["Aktif bergerak, makan bergizi seimbang, dan tidak merokok", "Sering begadang", "Jarang bergerak", "Mengonsumsi makanan tinggi garam secara berlebihan"], correct: 0 },
+            { q: "20. Kesimpulan utama dari BAKTI SmartDoll (NeuroLab) adalah...", a: ["Pemeriksaan laboratorium dapat membantu kita memahami beberapa faktor risiko dan pentingnya menjaga kesehatan otak", "Semua orang dengan hasil lab tertentu pasti terkena stroke", "Pemeriksaan laboratorium tidak diperlukan", "Stroke hanya terjadi pada orang lanjut usia"], correct: 0 }
         ];
 
-        function initQuiz() {
-            quizStarted = true;
-            currentQuizIndex = 0;
-            quizScore = 0;
-            document.getElementById('quiz-box').classList.remove('hidden');
-            document.getElementById('quiz-result-box').classList.add('hidden');
-            loadQuizQuestion();
-        }
+        function renderQuizQuestions() {
+            const container = document.getElementById('quiz-questions-list');
+            container.innerHTML = '';
 
-        function loadQuizQuestion() {
-            const q = quizQuestions20[currentQuizIndex];
-            document.getElementById('quiz-current-num').innerText = currentQuizIndex + 1;
-            document.getElementById('quiz-question-text').innerText = `${currentQuizIndex + 1}. ${q.q}`;
+            quizData.forEach((item, qIdx) => {
+                const qBox = document.createElement('div');
+                qBox.className = "bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-4";
+                
+                let optionsHtml = '';
+                const labels = ['A', 'B', 'C', 'D'];
+                item.a.forEach((optText, optIdx) => {
+                    optionsHtml += `
+                        <label class="flex items-center space-x-3 p-3.5 rounded-2xl border-2 border-gray-200 hover:border-brandBlue cursor-pointer transition font-semibold text-xs sm:text-sm text-gray-700">
+                            <input type="radio" name="question_${qIdx}" value="${optIdx}" onclick="playAudioTap()" class="w-4 h-4 text-brandBlue focus:ring-brandBlue">
+                            <span><strong>${labels[optIdx]}.</strong> ${optText}</span>
+                        </label>
+                    `;
+                });
 
-            const container = document.getElementById('quiz-options-container');
-            container.innerHTML = "";
-            selectedOptionIndex = null;
-            const nextBtn = document.getElementById('quiz-next-btn');
-            nextBtn.disabled = true;
-            nextBtn.className = "px-6 py-2.5 bg-indigo-300 text-white font-semibold text-xs rounded-xl cursor-not-allowed transition";
-
-            q.opts.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = "quiz-opt-btn w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 font-medium text-xs sm:text-sm text-slate-700 transition flex items-center justify-between";
-                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-slate-300"></i>`;
-                btn.onclick = () => selectQuizOption(idx, btn);
-                container.appendChild(btn);
+                qBox.innerHTML = `
+                    <h4 class="font-fredoka text-base sm:text-lg font-bold text-brandDark leading-snug">${item.q}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                        ${optionsHtml}
+                    </div>
+                `;
+                container.appendChild(qBox);
             });
         }
 
-        function selectQuizOption(idx, btnEl) {
-            selectedOptionIndex = idx;
-            const allBtns = document.querySelectorAll('.quiz-opt-btn');
-            allBtns.forEach(b => {
-                b.classList.remove('border-indigo-600', 'bg-indigo-50', 'text-indigo-900');
-                b.querySelector('i').className = "fa-regular fa-circle text-slate-300";
+        function submitQuiz() {
+            playAudioTap();
+            let score = 0;
+            let answeredCount = 0;
+
+            quizData.forEach((item, qIdx) => {
+                const selected = document.querySelector(`input[name="question_${qIdx}"]:checked`);
+                if (selected) {
+                    answeredCount++;
+                    if (parseInt(selected.value) === item.correct) {
+                        score += 5; // Total 20 * 5 = 100
+                    }
+                }
             });
 
-            btnEl.classList.add('border-indigo-600', 'bg-indigo-50', 'text-indigo-900');
-            btnEl.querySelector('i').className = "fa-solid fa-circle-check text-indigo-600";
-
-            const nextBtn = document.getElementById('quiz-next-btn');
-            nextBtn.disabled = false;
-            nextBtn.className = "px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow transition";
-        }
-
-        function submitQuizAnswer() {
-            if (selectedOptionIndex === null) return;
-            const q = quizQuestions20[currentQuizIndex];
-            if (selectedOptionIndex === q.ans) {
-                quizScore += 5; // 20 questions * 5 = 100 max
+            if (answeredCount < quizData.length) {
+                if (!confirm(`Kamu baru menjawab ${answeredCount} dari 20 soal. Yakin ingin mengirim sekarang?`)) {
+                    return;
+                }
             }
 
-            currentQuizIndex++;
-            if (currentQuizIndex < quizQuestions20.length) {
-                loadQuizQuestion();
-            } else {
-                showQuizResults();
+            // Display Results
+            document.getElementById('res-nama').innerText = userProfile.nama || "Pengguna";
+            document.getElementById('res-usia').innerText = userProfile.usia || "12";
+            document.getElementById('res-kategori').innerText = userProfile.kategori || "Remaja";
+            document.getElementById('res-alamat').innerText = userProfile.alamat || "-";
+
+            document.getElementById('quiz-score-display').innerText = score;
+            
+            const starDisplay = document.getElementById('star-award-display');
+            starDisplay.innerHTML = '';
+            let starsNum = score >= 80 ? 3 : (score >= 60 ? 2 : 1);
+            for (let i = 0; i < starsNum; i++) {
+                starDisplay.innerHTML += '<i class="fa-solid fa-star"></i>';
             }
+
+            // Hide Form & Show Result Card
+            document.getElementById('quiz-form').classList.add('hidden');
+            document.getElementById('quiz-result-card').classList.remove('hidden');
+
+            // Send Data to Google Spreadsheet (Simulation API / Webhook endpoint)
+            sendToSpreadsheet(userProfile, score);
         }
 
-        function showQuizResults() {
-            document.getElementById('quiz-box').classList.add('hidden');
-            document.getElementById('quiz-result-box').classList.remove('hidden');
-
-            document.getElementById('res-name').innerText = currentUser.name || "Peserta";
-            document.getElementById('res-info').innerText = `${currentUser.age || "-"} tahun, Asal: ${currentUser.address || "-"}`;
-            document.getElementById('res-score').innerText = quizScore;
+        function resetQuiz() {
+            document.getElementById('quiz-form').reset();
+            document.getElementById('quiz-form').classList.remove('hidden');
+            document.getElementById('quiz-result-card').classList.add('hidden');
         }
 
-        // Export to Spreadsheet simulation (CSV download)
-        function exportToSpreadsheet() {
-            const data = [
-                ["Nama Peserta", "Usia", "Asal Alamat", "Skor Kuis", "Tanggal/Waktu"],
-                [currentUser.name, currentUser.age, currentUser.address, quizScore + "/100", new Date().toLocaleString()]
-            ];
-
-            let csvContent = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `NeuroLab_Score_${currentUser.name.replace(/\s+/g, '_')}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            showModal("Ekspor Berhasil", "Data nilai telah diunduh dalam format spreadsheet (.csv) untuk direkap!", "success");
+        function sendToSpreadsheet(profile, score) {
+            console.log("Mengirim data skor ke Google Spreadsheet:", {
+                timestamp: new Date().toISOString(),
+                nama: profile.nama,
+                usia: profile.usia,
+                kategori: profile.kategori,
+                alamat: profile.alamat,
+                skor: score
+            });
+            // Fitur terhubung spreadsheet otomatis via Webhook/Fetch API
         }
 
-        function restartApp() {
-            switchPage('login');
+        // Initialize App on window load
+        window.onload = function() {
+            renderQuizQuestions();
         }
     </script>
 </body>
