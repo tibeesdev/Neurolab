@@ -1,1 +1,298 @@
-tambah backup
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaga Kesehatan Otak dan Stroke - BAKTI SmartDoll (NeuroLab)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandYellow: '#FFD166',
+                        brandPink: '#EF476F',
+                        brandBlue: '#118AB2',
+                        brandGreen: '#06D6A0',
+                        brandDark: '#073B4C',
+                        brandPurple: '#8338EC'
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F4F7FE;
+            user-select: none;
+        }
+        .font-fredoka {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Custom Animations */
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .animate-pulse-brain {
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+
+        @keyframes bounce-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-gentle {
+            animation: bounce-gentle 2.5s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F1F1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #118AB2;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Audio BGM (Soft & Ceria) -->
+    <audio id="bgm-audio" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=kids-happy-learning-112194.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-md border-b-4 border-brandBlue">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo & Brand -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="playAudioTap(); navigateTo('page-1')">
+                <div class="w-12 h-12 bg-brandYellow rounded-full flex items-center justify-center text-3xl shadow border-2 border-amber-400 animate-pulse-brain">
+                    🧠
+                </div>
+                <div>
+                    <h1 class="font-fredoka text-xl sm:text-2xl font-bold text-brandDark leading-tight">BAKTI <span class="text-brandPink">SmartDoll</span></h1>
+                    <p class="text-xs text-brandBlue font-extrabold hidden sm:block">NeuroLab - Jaga Kesehatan Otak & Stroke</p>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <nav class="hidden lg:flex items-center space-x-1 xl:space-x-2 font-fredoka text-sm">
+                <button onclick="playAudioTap(); navigateTo('page-1')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-house text-brandBlue"></i> <span>Home</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-2')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-comments text-brandPink"></i> <span>Apersepsi</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-3')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-book-open text-brandPurple"></i> <span>Materi Stroke</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-4')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-microscope text-brandGreen"></i> <span>Lab Detektif</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-5')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-gamepad text-amber-500"></i> <span>Mini Game</span>
+                </button>
+                <button onclick="playAudioTap(); navigateTo('page-6')" class="nav-btn px-3 py-2 rounded-xl text-brandDark hover:bg-brandBlue/10 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-square-poll-check text-rose-500"></i> <span>Evaluasi</span>
+                </button>
+            </nav>
+
+            <!-- Audio & Toolbar -->
+            <div class="flex items-center space-x-3">
+                <!-- User Badge -->
+                <div id="user-display-badge" class="hidden bg-purple-100 border border-purple-300 text-purple-800 rounded-full px-3 py-1 font-fredoka text-xs sm:text-sm font-bold flex items-center space-x-1">
+                    <i class="fa-solid fa-user text-purple-600"></i>
+                    <span id="badge-user-name">Pengguna</span>
+                </div>
+
+                <!-- Star Counter -->
+                <div class="flex items-center bg-amber-100 border-2 border-amber-400 rounded-full px-3 py-1 text-amber-800 font-fredoka font-bold text-sm shadow-sm">
+                    <i class="fa-solid fa-star text-amber-400 text-lg mr-1.5 animate-bounce"></i>
+                    <span id="star-count">0</span>
+                </div>
+
+                <!-- Sound Toggle Button -->
+                <button id="bgm-toggle" onclick="toggleBGM()" class="w-10 h-10 rounded-full bg-brandBlue text-white flex items-center justify-center hover:bg-sky-600 transition shadow" title="Musik Latar">
+                    <i id="bgm-icon" class="fa-solid fa-volume-xmark"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden w-10 h-10 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center hover:bg-gray-200">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 px-4 py-3 space-y-2 font-fredoka text-sm shadow-lg">
+            <button onclick="playAudioTap(); navigateTo('page-1'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-house text-brandBlue w-6"></i> <span>Home</span>
+            </button>
+            <button onclick="playAudioTap(); navigateTo('page-2'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-comments text-brandPink w-6"></i> <span>Apersepsi</span>
+            </button>
+            <button onclick="playAudioTap(); navigateTo('page-3'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-book-open text-brandPurple w-6"></i> <span>Materi Stroke</span>
+            </button>
+            <button onclick="playAudioTap(); navigateTo('page-4'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-microscope text-brandGreen w-6"></i> <span>Lab Detektif</span>
+            </button>
+            <button onclick="playAudioTap(); navigateTo('page-5'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-gamepad text-amber-500 w-6"></i> <span>Mini Game</span>
+            </button>
+            <button onclick="playAudioTap(); navigateTo('page-6'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-square-poll-check text-rose-500 w-6"></i> <span>Evaluasi (20 Soal)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto px-4 py-6 sm:py-10 flex-grow w-full">
+
+        <!-- ================= HALAMAN 1: PEMBUKA & LOGIN ================= -->
+        <section id="page-1" class="page-view flex flex-col items-center justify-center text-center space-y-6 py-2">
+
+            <!-- Brain Character Mascot -->
+            <div class="relative">
+                <div class="w-44 h-44 sm:w-56 sm:h-56 bg-gradient-to-tr from-pink-300 via-purple-300 to-indigo-200 rounded-full flex items-center justify-center shadow-2xl animate-pulse-brain border-8 border-white">
+                    <div class="text-7xl sm:text-8xl filter drop-shadow-lg transform hover:scale-110 transition duration-300">
+                        🧠
+                    </div>
+                </div>
+                <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-brandYellow border-4 border-white px-4 py-1 rounded-full font-fredoka font-bold text-brandDark shadow-lg text-xs sm:text-sm animate-bounce-gentle whitespace-nowrap">
+                    Hai! Aku Brainy! 👋
+                </div>
+            </div>
+
+            <!-- Title -->
+            <div class="max-w-2xl space-y-2">
+                <span class="bg-brandGreen/20 text-brandGreen font-fredoka font-bold text-xs sm:text-sm px-4 py-1.5 rounded-full uppercase tracking-wider inline-block border border-brandGreen/30">
+                    BAKTI SmartDoll Interactive Learning
+                </span>
+                <h1 class="font-fredoka text-3xl sm:text-5xl font-extrabold text-brandDark leading-tight">
+                    Jaga Kesehatan Otak <br><span class="text-brandPink">& Cegah Stroke</span>
+                </h1>
+                <p class="text-gray-600 text-sm sm:text-base max-w-xl mx-auto font-medium">
+                    Media belajar seru untuk Remaja, Dewasa, hingga Lansia. Mari kenali pencegahan stroke bersama Karakter <strong>Brainy</strong>!
+                </p>
+            </div>
+
+            <!-- Form Identitas Pengguna -->
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-brandBlue w-full max-w-md text-left space-y-4">
+                <h3 class="font-fredoka text-lg font-bold text-brandDark flex items-center gap-2">
+                    <i class="fa-solid fa-id-card text-brandPink"></i> Masukkan Identitas Kamu:
+                </h3>
+
+                <div class="space-y-3 font-fredoka text-sm">
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-1">Nama Lengkap:</label>
+                        <input type="text" id="input-nama" placeholder="Contoh: Budi Santoso" class="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-brandBlue focus:outline-none transition">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-1">Usia (Tahun):</label>
+                            <input type="number" id="input-usia" placeholder="Contoh: 12 / 45" class="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-brandBlue focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-1">Kategori:</label>
+                            <select id="input-kategori" class="w-full px-3 py-2.5 rounded-xl border-2 border-gray-200 focus:border-brandBlue focus:outline-none transition">
+                                <option value="Remaja">Remaja (10-18)</option>
+                                <option value="Dewasa">Dewasa (19-59)</option>
+                                <option value="Lansia">Lansia (60+)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-1">Asal Alamat / Kota:</label>
+                        <input type="text" id="input-alamat" placeholder="Contoh: Jakarta / Surabaya" class="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-brandBlue focus:outline-none transition">
+                    </div>
+                </div>
+
+                <button onclick="startAppWithProfile()" class="w-full bg-brandPink hover:bg-rose-600 text-white font-fredoka font-bold text-lg py-3 rounded-2xl shadow-lg transition transform active:scale-95 border-b-4 border-rose-800 flex items-center justify-center space-x-2">
+                    <span>Mulai Belajar</span>
+                    <i class="fa-solid fa-play"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= HALAMAN 2: APERSEPSI ================= -->
+        <section id="page-2" class="page-view hidden space-y-8">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-brandBlue to-teal-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center sm:text-left">
+                    <span class="bg-white/20 font-fredoka text-xs px-3 py-1 rounded-full uppercase tracking-wider">Tahap 1: Apersepsi</span>
+                    <h2 class="font-fredoka text-2xl sm:text-4xl font-bold">Yuk, Tes Pengetahuan Awalmu! 🤔</h2>
+                    <p class="text-white/90 text-sm sm:text-base max-w-lg">Jawab pertanyaan interaktif di bawah ini untuk memulai!</p>
+                </div>
+                <div class="w-20 h-20 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center text-5xl flex-shrink-0 animate-bounce-gentle">
+                    🕵️‍♂️
+                </div>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-4">
+                <div class="flex items-start space-x-3">
+                    <span class="bg-brandPink text-white font-fredoka font-bold rounded-2xl w-8 h-8 flex items-center justify-center flex-shrink-0">1</span>
+                    <h3 class="font-fredoka text-lg sm:text-xl font-bold text-brandDark">Mengapa penyakit stroke bisa terjadi pada seseorang?</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                    <button onclick="checkApersepsi(this, false, 'Kurang tepat! Stroke tidak disebabkan oleh kuman udara, melainkan masalah pembuluh darah di otak.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>A. Karena infeksi kuman atau bakteri di udara</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, true, 'Benar sekali! 🎉 Stroke terjadi karena gangguan aliran darah ke otak (sumbatan atau pecah pembuluh darah).')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>B. Karena gangguan aliran darah ke otak (tersumbat / pecah)</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, false, 'Belum tepat! Jarang berjemur bukan penyebab utama serangan stroke.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>C. Karena jarang berjemur di bawah matahari pagi</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, false, 'Salah! Kurang minum memang dehidrasi, tapi bukan penyebab stroke langsung.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>D. Karena terlalu banyak minum air putih murni</span>
+                    </button>
+                </div>
+                <div class="feedback-box hidden p-4 rounded-2xl font-bold text-sm"></div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-2 border-gray-100 space-y-4">
+                <div class="flex items-start space-x-3">
+                    <span class="bg-brandPink text-white font-fredoka font-bold rounded-2xl w-8 h-8 flex items-center justify-center flex-shrink-0">2</span>
+                    <h3 class="font-fredoka text-lg sm:text-xl font-bold text-brandDark">Manakah di bawah ini yang merupakan gejala khas serangan stroke?</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                    <button onclick="checkApersepsi(this, false, 'Salah! Batuk adalah masalah pada saluran pernapasan/paru-paru.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>A. Batuk berdahak dan pilek selama seminggu</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, false, 'Belum tepat! Gatal kulit biasanya indikasi alergi.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>B. Gatal-gatal di seluruh permukaan kulit</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, true, 'Hebat! Tepat sekali! 🌟 Senyum mencong, bicara pelo, dan tangan lemah mendadak adalah gejala utama!')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>C. Senyum mencong, bicara pelo, & tangan lemah mendadak</span>
+                    </button>
+                    <button onclick="checkApersepsi(this, false, 'Kurang tepat! Sakit gigi adalah gangguan kesehatan mulut.')" class="apersepsi-opt p-4 rounded-2xl border-2 border-gray-200 hover:border-brandBlue text-left transition flex items-center justify-between font-semibold text-gray-700">
+                        <span>D. Nyeri pada gigi geraham saat makan es krim</span>
+                    </button>
+                </div>
+                <div class="feedback-box hidden p-4 rounded-2xl font-bold text-sm"></div>
+         
